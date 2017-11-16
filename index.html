@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Animate Element Along SVG Path with GaSAP</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="TweenMax-latest-beta.js"></script>
+	<script src="MorphSVGPlugin.min.js"></script>
+</head>
+<body>
+
+	<div id="nav">
+		<button class="dark-grey-button club-demo-button" id="createAnimation">create animation</button> 
+	</div>
+
+
+	<svg id="demo" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 786 400">
+
+		<!-- Square -->
+		<rect id="background" width="786" height="400" fill="#333"/>
+
+		<!-- Ballon -->
+		<g id="balloon">
+			<rect id="bounds" x="51.65" y="100.51" width="77.1" height="106.1" fill="none" stroke="#dbdbdb" stroke-miterlimit="10" opacity="0.5" style="isolation: isolate"/>
+			<path d="M128.65,141.11c0,21.1-18.9,52.7-38.3,52.7-20,0-38.3-31.5-38.3-52.7s17.2-40.6,38.3-40.6S128.65,119.91,128.65,141.11Z" fill="#e52125"/>
+			<polygon points="90.35 189.01 86.65 206.31 100.25 204.51 90.35 189.01" fill="#e52125"/>
+		</g>
+
+		<!-- Line -->
+		<path id="motionPath" d="M165.36,297.42s127.17,2.86,146-59c21-69,71-104,165-63s165,80,202,9,93-158,93-158" fill="none" stroke="#5dba47" stroke-miterlimit="10" stroke-width="4"/>
+
+	</svg>
+	
+	<script src="main.js"></script>
+</body>
+</html>

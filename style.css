@@ -1,0 +1,38 @@
+body {
+	margin:0;
+	background: #cdcdcd;
+	}
+	svg {
+	display: block;
+	margin: 20px auto;
+	width:800px;
+	}
+
+	#balloon{
+	opacity:0.6;
+	}
+
+	#slider{
+	float:left;
+	width:300px;
+	position:relative;
+	top:8px;
+	}
+
+	#guides {
+	opacity:0;
+	}
+
+	#nav {
+	width:480px;
+	margin:20px auto;
+	height:30px;
+	}
+
+	button {
+	
+	padding:10px;
+	float:right;
+	}
+
+	#rerun-button { display: none; }
