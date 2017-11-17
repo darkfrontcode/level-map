@@ -8,23 +8,21 @@ const lineTwo = document.getElementById("line-two")
 
 const balloon = document.getElementById("balloon")
 
-const path = MorphSVGPlugin.pathDataToBezier(line)
-const pathTwo = MorphSVGPlugin.pathDataToBezier(lineTwo)
+const path = MorphSVGPlugin.pathDataToBezier(line, { align: balloon })
+const pathTwo = MorphSVGPlugin.pathDataToBezier(lineTwo, { align: balloon })
 
-const merge = (a, b) => {
+const merge = (...args) => {
 
-	// const c = a.concat(b)
-	// const keys = [...(new Set(c.map(({ x }) => x)))]
+	let result = new Array()
+	const last = args.length - 1
 
-	// for(let arr of args)
-	// {
-	// 	for(let item of arr)
-	// 	{
-	// 		if(result.indexOf(item) == -1) result.push(item)
-	// 	}
-	// }
+	for(let [key, arr] of args.entries())
+	{
+		if(key != last) arr.pop()
+		result = result.concat(arr)
+	}
 
-	return a
+	return result
 
 }
 
@@ -40,9 +38,8 @@ button.onclick = () => {
 	.set(balloon, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
 	.add[
 		// TweenLite.to(balloon, 2, { bezier: { values:path, type:"cubic", autoRotate: true }}),
-		TweenLite.to(balloon, 2, { bezier: { values:pathJoin, type:"cubic", autoRotate: true }, delay: 2})
+		TweenLite.to(balloon, 2, { bezier: { values:pathJoin, type:"cubic", autoRotate: true }})
+		// TweenLite.to(balloon, 2, { bezier: { values:pathJoin, type:"cubic", autoRotate: true }, delay: 2})
 		// TweenMax.fromTo(line, 2, { drawSVG: '0% 0%' }, { drawSVG: '0% 100%' })
 	]
 }
-
-// https://codepen.io/joemidi/pen/zqyrPN?editors=0010
