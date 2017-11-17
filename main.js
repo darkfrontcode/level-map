@@ -1,7 +1,8 @@
 
 console.clear()
 
-const button = document.getElementById("button-action") 
+const buttonOne = document.getElementById("one")
+const buttonTwo = document.getElementById("two")
 
 const line = document.getElementById("line")
 const lineTwo = document.getElementById("line-two")
@@ -26,20 +27,24 @@ const merge = (...args) => {
 
 }
 
-const pathJoin = merge(path, pathTwo)
-
 const update = () => {
 	// console.log(this.progress())
 }
-const tl = new TimelineLite({ onUpdate: update, reversed: true })
 
-button.onclick = () => {
-	tl
-	.set(balloon, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
-	.add[
-		// TweenLite.to(balloon, 2, { bezier: { values:path, type:"cubic", autoRotate: true }}),
+const tl = new TimelineLite({ onUpdate: update })
+tl.set(balloon, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
+
+buttonOne.onclick = () =>
+{
+	tl.add[TweenLite.to(balloon, 2, { bezier: { values:path, type:"cubic", autoRotate: true }})]
+}
+
+buttonTwo.onclick = () =>
+{
+	const pathJoin = merge(path, pathTwo)
+	tl.add[
 		TweenLite.to(balloon, 2, { bezier: { values:pathJoin, type:"cubic", autoRotate: true }})
-		// TweenLite.to(balloon, 2, { bezier: { values:pathJoin, type:"cubic", autoRotate: true }, delay: 2})
-		// TweenMax.fromTo(line, 2, { drawSVG: '0% 0%' }, { drawSVG: '0% 100%' })
 	]
 }
+
+// TweenMax.fromTo(line, 2, { drawSVG: '0% 0%' }, { drawSVG: '0% 100%' })
