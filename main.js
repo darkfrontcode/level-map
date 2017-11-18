@@ -25,7 +25,8 @@ class levels
 	{
 		this.list = new Array(
 			new level("line", 1),
-			new level("line-two", 2)
+			new level("line-two", 2),
+			new level("line-three", 3)
 		)
 	}
 }
@@ -41,22 +42,33 @@ class levelLogic
 
 		const Levels = new levels()
 
+		// TODO: do better
+		Levels.list.forEach(l => {
+			const last = l.path.length - 1
+			
+			this.tl.set(`#level-${l.pos}-pin`, {
+				x: l.path[last].x,
+				y: l.path[last].y,
+				xPercent: -50,
+				yPercent: -50
+			});
+		})
+		
 		// TODO: add labels
 		Levels.list.forEach(l => {
 			this.tl.to(
 				circle, 
-				.5, 
+				1, 
 				{ 
 					bezier: { values: l.path, type:"soft" }, 
 					ease: Power0.easeNone,
-					onComplete: () => this.logic(l.pos),
-					onReverseComplete: () => this.logic(l.pos - 1) 
+					onComplete: () => this.isTarget(l.pos),
+					onReverseComplete: () => this.isTarget(l.pos - 1) 
 				}
 			)
 		})
 
 		this.tl.paused(true)
-
 		this.action = this.action.bind(this)
 		
 	}
@@ -73,15 +85,20 @@ class levelLogic
 		this.current = pos
 	}
 
-	logic(pos)
+	isTarget(pos)
 	{
 		if(pos == this.current) this.tl.stop()
 	}
 }
 
+const Levels = new levels()
 const LevelLogic = new levelLogic()
 
-document
-	.getElementById("nav")
-	.querySelectorAll("button")
+let html = ""
+
+Levels.list.map(l => html += `<button id="level-${l.pos}" data-pos="${l.pos}">level-${l.pos}</button>`)
+
+const nav = document.getElementById("nav")
+nav.innerHTML = html
+nav.querySelectorAll("button")
 	.forEach(button => button.onclick = LevelLogic.action)
