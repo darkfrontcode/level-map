@@ -57,13 +57,13 @@ class levelLogic
 		// TODO: add labels
 		Levels.list.forEach(l => {
 			this.tl.to(
-				circle, 
+				circle,
 				1, 
 				{ 
 					bezier: { values: l.path, type:"soft" }, 
 					ease: Power0.easeNone,
-					onComplete: () => this.isTarget(l.pos),
-					onReverseComplete: () => this.isTarget(l.pos - 1) 
+					onComplete: () => this.shouldStop(l.pos),
+					onReverseComplete: () => this.shouldStop(l.pos - 1) 
 				}
 			)
 		})
@@ -85,7 +85,7 @@ class levelLogic
 		this.current = pos
 	}
 
-	isTarget(pos)
+	shouldStop(pos)
 	{
 		if(pos == this.current) this.tl.stop()
 	}
@@ -100,5 +100,4 @@ Levels.list.map(l => html += `<button id="level-${l.pos}" data-pos="${l.pos}">le
 
 const nav = document.getElementById("nav")
 nav.innerHTML = html
-nav.querySelectorAll("button")
-	.forEach(button => button.onclick = LevelLogic.action)
+nav.querySelectorAll("button").forEach(button => button.onclick = LevelLogic.action)
