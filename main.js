@@ -1,70 +1,87 @@
 
 console.clear()
 
-const line = document.getElementById("line")
-const lineTwo = document.getElementById("line-two")
 const circle = document.getElementById("circle")
 
-const transformPath = (target, align) => 
+class level
 {
-	return MorphSVGPlugin.pathDataToBezier(target, { align }) 
+	constructor(element, pos)
+	{
+		this.element = document.getElementById(element)
+		this.pos = pos
+		this.path = this.transform(this.element)
+		this.circle = circle
+	}
+
+	transform(target)
+	{
+		return MorphSVGPlugin.pathDataToBezier(target, { align: this.circle }) 
+	}
 }
 
-const config = new Array(
-	{ 
-		pos: 1, 
-		path: transformPath(line, circle) 
-	},
-	{ 
-		pos: 2, 
-		path: transformPath(lineTwo, circle) 
-	}
-)
-
-
-const path = MorphSVGPlugin.pathDataToBezier(line, { align: circle })
-const pathTwo = MorphSVGPlugin.pathDataToBezier(lineTwo, { align: circle })
-
-const logic = (pos) => {
-	if(pos == current) tl.stop()
-}
-
-let current = 0
-
-const tl = new TimelineLite()
-
-tl.set(circle, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
-tl.to(
-	circle, 2, 
-	{ 
-		bezier: { values:path, type:"cubic", autoRotate: true }, 
-		onComplete: () => logic(1),
-		onReverseComplete: () => logic(1)  
-	}
-)
-tl.to(
-	circle, 2, 
-	{ 
-		bezier: { values:pathTwo, type:"cubic", autoRotate: true }, 
-		onComplete: () => logic(2),
-		onReverseComplete: () => logic(1) 
-	}
-)
-tl.paused(true)
-
-const action = (event) =>
+class levels
 {
-	tl.stop()
-	const pos = +event.target.getAttribute("data-pos")
-
-	if(pos == current) tl.stop()
-	else if(pos > current) tl.play()
-	else tl.reverse()
-
-	current = pos
+	constructor()
+	{
+		this.list = new Array(
+			new level("line", 1),
+			new level("line-two", 2)
+		)
+	}
 }
+
+class levelLogic
+{
+	constructor()
+	{
+		this.current = 0
+
+		this.tl = new TimelineLite()
+		this.tl.set(circle, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
+
+		const Levels = new levels()
+
+		// TODO: add labels
+		Levels.list.forEach(l => {
+			this.tl.to(
+				circle, 
+				.5, 
+				{ 
+					bezier: { values: l.path, type:"soft" }, 
+					ease: Power0.easeNone,
+					onComplete: () => this.logic(l.pos),
+					onReverseComplete: () => this.logic(l.pos - 1) 
+				}
+			)
+		})
+
+		this.tl.paused(true)
+
+		this.action = this.action.bind(this)
+		
+	}
+
+	action(event)
+	{
+		this.tl.stop()
+		const pos = +event.target.getAttribute("data-pos")
+	
+		if(pos == this.current) this.tl.stop()
+		else if(pos > this.current) this.tl.play()
+		else this.tl.reverse()
+	
+		this.current = pos
+	}
+
+	logic(pos)
+	{
+		if(pos == this.current) this.tl.stop()
+	}
+}
+
+const LevelLogic = new levelLogic()
 
 document
 	.getElementById("nav")
 	.querySelectorAll("button")
-	.forEach(button => button.onclick = action)
+	.forEach(button => button.onclick = LevelLogic.action)
