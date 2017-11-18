@@ -1,0 +1,29 @@
+{
+  "name": "animate-element-along-svg-path-with-gasap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node --cache-directory .tscache ./index.ts --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darkfrontcode/animate-element-along-svg-path-with-gasap.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/darkfrontcode/animate-element-along-svg-path-with-gasap/issues"
+  },
+  "homepage": "https://github.com/darkfrontcode/animate-element-along-svg-path-with-gasap#readme",
+  "dependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/express": "^4.0.39",
+    "chalk": "^2.3.0",
+    "express": "^4.16.2",
+    "path": "^0.12.7",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.6.1"
+  }
+}
