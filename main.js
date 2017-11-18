@@ -12,39 +12,35 @@ const balloon = document.getElementById("balloon")
 const path = MorphSVGPlugin.pathDataToBezier(line, { align: balloon })
 const pathTwo = MorphSVGPlugin.pathDataToBezier(lineTwo, { align: balloon })
 
-const merge = (...args) => {
-
-	let result = new Array()
-	const last = args.length - 1
-
-	for(let [key, arr] of args.entries())
-	{
-		if(key != last) arr.pop()
-		result = result.concat(arr)
-	}
-
-	return result
-
-}
-
 const update = () => {
-	// console.log(this.progress())
+	// console.log(tl.progress())
 }
+
+const logic = (pos) => {
+	if(current == pos) tl.stop()
+}
+
+let current = 0
 
 const tl = new TimelineLite({ onUpdate: update })
+
 tl.set(balloon, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
+tl.to(balloon, 2, { bezier: { values:path, type:"cubic", autoRotate: true }, onComplete: () => logic(1) })
+tl.to(balloon, 2, { bezier: { values:pathTwo, type:"cubic", autoRotate: true }, onComplete: () => logic(2)})
+tl.paused(true)
 
-buttonOne.onclick = () =>
+buttonOne.onclick = (event) =>
 {
-	tl.add[TweenLite.to(balloon, 2, { bezier: { values:path, type:"cubic", autoRotate: true }})]
+	tl.stop()
+	const pos = event.target.getAttribute("data-pos")
+	pos > current ? tl.play() : tl.reverse()
+	current = 1
 }
 
-buttonTwo.onclick = () =>
+buttonTwo.onclick = (event) =>
 {
-	const pathJoin = merge(path, pathTwo)
-	tl.add[
-		TweenLite.to(balloon, 2, { bezier: { values:pathJoin, type:"cubic", autoRotate: true }})
-	]
+	tl.stop()
+	const pos = event.target.getAttribute("data-pos")
+	pos > current ? tl.play() : tl.reverse()
+	current = 2
 }
-
-// TweenMax.fromTo(line, 2, { drawSVG: '0% 0%' }, { drawSVG: '0% 100%' })
