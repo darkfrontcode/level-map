@@ -1,46 +1,70 @@
 
 console.clear()
 
-const buttonOne = document.getElementById("one")
-const buttonTwo = document.getElementById("two")
-
 const line = document.getElementById("line")
 const lineTwo = document.getElementById("line-two")
+const circle = document.getElementById("circle")
 
-const balloon = document.getElementById("balloon")
-
-const path = MorphSVGPlugin.pathDataToBezier(line, { align: balloon })
-const pathTwo = MorphSVGPlugin.pathDataToBezier(lineTwo, { align: balloon })
-
-const update = () => {
-	// console.log(tl.progress())
+const transformPath = (target, align) => 
+{
+	return MorphSVGPlugin.pathDataToBezier(target, { align }) 
 }
 
+const config = new Array(
+	{ 
+		pos: 1, 
+		path: transformPath(line, circle) 
+	},
+	{ 
+		pos: 2, 
+		path: transformPath(lineTwo, circle) 
+	}
+)
+
+
+const path = MorphSVGPlugin.pathDataToBezier(line, { align: circle })
+const pathTwo = MorphSVGPlugin.pathDataToBezier(lineTwo, { align: circle })
+
 const logic = (pos) => {
-	if(current == pos) tl.stop()
+	if(pos == current) tl.stop()
 }
 
 let current = 0
 
-const tl = new TimelineLite({ onUpdate: update })
+const tl = new TimelineLite()
 
-tl.set(balloon, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
-tl.to(balloon, 2, { bezier: { values:path, type:"cubic", autoRotate: true }, onComplete: () => logic(1) })
-tl.to(balloon, 2, { bezier: { values:pathTwo, type:"cubic", autoRotate: true }, onComplete: () => logic(2)})
+tl.set(circle, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
+tl.to(
+	circle, 2, 
+	{ 
+		bezier: { values:path, type:"cubic", autoRotate: true }, 
+		onComplete: () => logic(1),
+		onReverseComplete: () => logic(1)  
+	}
+)
+tl.to(
+	circle, 2, 
+	{ 
+		bezier: { values:pathTwo, type:"cubic", autoRotate: true }, 
+		onComplete: () => logic(2),
+		onReverseComplete: () => logic(1) 
+	}
+)
 tl.paused(true)
 
-buttonOne.onclick = (event) =>
+const action = (event) =>
 {
 	tl.stop()
-	const pos = event.target.getAttribute("data-pos")
-	pos > current ? tl.play() : tl.reverse()
-	current = 1
+	const pos = +event.target.getAttribute("data-pos")
+
+	if(pos == current) tl.stop()
+	else if(pos > current) tl.play()
+	else tl.reverse()
+
+	current = pos
 }
 
-buttonTwo.onclick = (event) =>
-{
-	tl.stop()
-	const pos = event.target.getAttribute("data-pos")
-	pos > current ? tl.play() : tl.reverse()
-	current = 2
-}
+document
+	.getElementById("nav")
+	.querySelectorAll("button")
+	.forEach(button => button.onclick = action)
