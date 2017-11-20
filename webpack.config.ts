@@ -34,6 +34,9 @@ export default <any>{
 		]
 
 	},
+	// externals: {
+	// 	'TweenLite' : 'TweenLite'
+	// },
 	devtool: "source-map",
 	resolve: {
 
