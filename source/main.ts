@@ -1,3 +1,4 @@
+import * as MorphSVGPlugin from './MorphSVGPlugin.min.js'
 
 console.clear()
 

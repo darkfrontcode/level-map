@@ -15,7 +15,7 @@
 		"allowJs": true
 	},
     "include": [
-        "./source/main.ts"
+        "./source/*"
     ],
 	"exclude": [
 		"node_modules"
