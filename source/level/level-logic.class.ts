@@ -12,14 +12,26 @@ export class LevelLogic
 	{
 		this.avatar = avatar
 		this.current = 0
-		this.tl = new TimelineLite({paused: true})
+		this.tl = new TimelineLite()
 		this.tl.set(this.avatar, { xPercent:-50, yPercent:-50, transformOrigin:"50% 50%" })
 		this.levels = new Levels(this.avatar)
 		this.action = this.action.bind(this)
+		this.buildMap()
+	}
 
-		// TODO: do better
+	private buildMap() : void
+	{
+		this.mapPinPosition()
+		this.mapRoutes()
+		
+		this.tl.paused(true)
+		this.links()
+	}
+
+	private mapPinPosition() : void
+	{
 		this.levels.list.forEach(level => {
-
+			
 			const last = level.path.length - 1
 			
 			this.tl.set(`#level-${level.id}-pin`, {
@@ -30,8 +42,10 @@ export class LevelLogic
 			});
 
 		})
-		
-		// TODO: do better
+	}
+
+	private mapRoutes() : void
+	{
 		this.levels.list.forEach(level => {
 			this.tl.to(
 				this.avatar,
@@ -44,16 +58,13 @@ export class LevelLogic
 				}
 			)
 		})
-
-		this.build()
-		
 	}
 
-	public build() : void
+	public links() : void
 	{
 		let html = ""
 		
-		this.levels.list.map(level => html += `<button id="level-${level.id}" data-pos="${level.id}">level-${level.id}</button>`)
+		this.levels.list.map(level => html += `<button id="level-${level.id}" data-id="${level.id}">level-${level.id}</button>`)
 		
 		const nav = document.getElementById("nav")
 		nav.innerHTML = html
@@ -63,7 +74,7 @@ export class LevelLogic
 	public action(event:any) : void
 	{
 		this.tl.pause()
-		const id = +event.target.getAttribute("data-pos")
+		const id = +event.target.getAttribute("data-id")
 	
 		if(id == this.current) this.tl.pause()
 		else if(id > this.current) this.tl.play()

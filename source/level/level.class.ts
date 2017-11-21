@@ -1,5 +1,4 @@
 import { IPath } from './path.interface'
-const MorphSVGPlugin = window["MorphSVGPlugin"]
 
 export class Level
 {
@@ -19,7 +18,7 @@ export class Level
 
 	transform(target:HTMLElement) : Array<IPath>
 	{
-		console.log(MorphSVGPlugin)
-		return MorphSVGPlugin.pathDataToBezier(target, { align: this.avatar }) 
+		// TODO: do better than this
+		return window["MorphSVGPlugin"].pathDataToBezier(target, { align: this.avatar }) 
 	}
 }
