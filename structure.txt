@@ -1,0 +1,54 @@
+class Level
+{
+	id: 2 => 3
+	path:Array<IPath>
+	children:[
+
+		child:[
+			routeName: 'a',
+			contens: [ 3, 4 ],
+			levels:[
+				level:{
+					id: 3,
+					path:Array<IPath>
+					children: [
+						child:{
+							routeName: 'c',
+							contens: [7],
+							levels:[
+								level:{
+									id: number,
+									path:Array<IPath>,
+									children: null
+								}
+							]
+						}
+					]
+				},
+				level:{
+					id: 4,
+					path:Array<IPath>
+					children: null
+				}
+			]
+		],
+
+		child:[
+			routeName: 'b',
+			contens: [ 5, 6 ],
+			levels:[
+				level:{
+					id: 5,
+					path:Array<IPath>,
+					children: null
+				},
+				level:{
+					id: 6,
+					path:Array<IPath>,
+					children: null
+				}
+			]
+		],
+
+	]
+}
