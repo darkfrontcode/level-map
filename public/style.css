@@ -5,7 +5,12 @@ html
 	padding: 0;
 }
 
-#circle
+circle
 {
-	z-index: 1;
+	transition: fill .25s
+}
+
+circle:hover
+{
+	fill: red;
 }

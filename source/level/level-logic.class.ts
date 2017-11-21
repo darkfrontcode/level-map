@@ -23,7 +23,7 @@ export class LevelLogic
 	{
 		this.mapPinPosition()
 		this.mapRoutes()
-		
+
 		this.tl.paused(true)
 		this.links()
 	}
@@ -60,17 +60,6 @@ export class LevelLogic
 		})
 	}
 
-	public links() : void
-	{
-		let html = ""
-		
-		this.levels.list.map(level => html += `<button id="level-${level.id}" data-id="${level.id}">level-${level.id}</button>`)
-		
-		const nav = document.getElementById("nav")
-		nav.innerHTML = html
-		nav.querySelectorAll("button").forEach(button => button.onclick = this.action)
-	}
-
 	public action(event:any) : void
 	{
 		this.tl.pause()
@@ -81,6 +70,14 @@ export class LevelLogic
 		else this.tl.reverse()
 	
 		this.current = id
+	}
+
+	public links() : void
+	{
+		document
+			.getElementById("levels")
+			.querySelectorAll("circle")
+			.forEach(circle => circle.onclick = this.action)
 	}
 
 	public shouldStop(id:number) : void
