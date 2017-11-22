@@ -19,17 +19,19 @@ class Level
 }
 
 const list = new Array<Level>(
-	new Level(1, null, [2]),
-	new Level(2, 1, [3]),
-	new Level(3, 2, [4,5]),
-	new Level(4, 3, null),
-	new Level(5, 3, null)
+	new Level(0, null, [1]),
+	new Level(1, 0, [2]),
+	new Level(2, 1, [3, 4]),
+	new Level(3, 2, null),
+	new Level(4, 2, [5]),
+	new Level(5, 4, null),
 )
 
 const search = (target:number) => {
 
 	let current = list[0]
 	let visited = new Array<number>()
+	let loop = 0
 
 	const visit = (level:Level) => {
 		if(!visited.find(v => v == level.value)) visited.push(level.value)
@@ -49,7 +51,7 @@ const search = (target:number) => {
 				if(current.children.length == 1)
 				{
 					visit(current)
-					current = list.filter(l => l.value == current.children[0])[0]
+					current = list[current.children[0]]
 				}
 				else
 				{
@@ -59,7 +61,7 @@ const search = (target:number) => {
 						if(!visited.find(v => v == child))
 						{
 							visited.push(child)
-							current = list.filter(l => l.value == child)[0]
+							current = list[child]
 							break
 						}
 					}
@@ -68,20 +70,28 @@ const search = (target:number) => {
 			else
 			{
 				visit(current)
-				current = list.filter(l => l.value == current.parent)[0]
+				current = list[current.parent]
 			}
 		}
-		
+
+		loop++
+		if(loop == list.length) break
 	}
+
+	const path = new Array<number>()
+	let p = visited[visited.length - 1]
+
+	while(p != 0)
+	{
+		const parent = list[p].parent
+		path.unshift(parent)
+		p = parent
+	}
+
+	console.log(path)
 
 	return visited
 
 }
 
-console.log(
-	search(1),
-	search(2),
-	search(3),
-	search(4),
-	search(5)
-)
+console.log(search(5))
