@@ -1,4 +1,3 @@
-class Level
 {
 	id: 2 => 3
 	path:Array<IPath>

@@ -42,6 +42,7 @@ app.use(webpack_hot_middleware(webpack_compiler))
 ========================================================================== */
 
 app.get('/', (req:req, res:res) => res.sendFile(path.join(__dirname, './views/map.html')))
+app.get('/breadth-first-search', (req:req, res:res) => res.sendFile(path.join(__dirname, './views/breadth-first-search.html')))
 
 /* ==========================================================================
 	-- Server
