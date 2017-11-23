@@ -67,7 +67,7 @@ eighth.addParent(six)
 
 class Scenario
 {
-	
+
 	public static levels = new Array<Level>(zero, one, two, tree, four, five, six, seven, eighth)
 
 	public static clone(levels:Array<Level>) : Array<Level>
@@ -102,17 +102,16 @@ class Scenario
 
 console.log(Scenario.findPath(8))
 
-
 /*
 
-	zero
-		one
-			two
-				tree
-					four
-				five
-				six
-					seven
-					eighth
+	0
+	----1
+	--------2
+	------------3
+	----------------4
+	------------5
+	------------6
+	----------------7
+	----------------8
 
 */
