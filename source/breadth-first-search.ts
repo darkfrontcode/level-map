@@ -3,16 +3,16 @@
 class Level
 {
 	public value:number
-	public parent:number
-	private _children:Array<number>
+	public parent:Level
+	private _children:Array<Level>
 	public singleChild:boolean
 	public hasChildren:boolean
 	public visited:boolean
 	
 	constructor(
 		value:number, 
-		parent:number = null, 
-		children:Array<number> = new Array<number>()
+		parent:Level = null, 
+		children:Array<Level> = new Array<Level>()
 	)
 	{
 		this.value = value
@@ -25,7 +25,7 @@ class Level
 		return this._children
 	}
 
-	set children(children:Array<number>)
+	set children(children:Array<Level>)
 	{
 		if(children.length > 0)
 		{
@@ -39,20 +39,91 @@ class Level
 
 		this._children = children
 	}
+
+	public addParent(parent:Level) : void
+	{
+		this.parent = parent
+	}
+
+	public addChild(child:Level) : void
+	{
+		const children = this.clone(this.children)
+		children.push(child)
+		this.children = children
+	}
+
+	public clone(children:Array<Level>) : Array<Level>
+	{
+		return [ ...children ]
+	}
 }
+
+const zero = new Level(0)
+const one = new Level(1)
+const two = new Level(2)
+const tree = new Level(3)
+const four = new Level(4)
+const five = new Level(5)
+const six = new Level(6)
+const seven = new Level(7)
+const eighth = new Level(8)
+
+
+zero.addChild(two)
+
+one.addParent(zero)
+one.addChild(two)
+
+two.addParent(one)
+two.addChild(tree)
+two.addChild(five)
+two.addChild(six)
+
+tree.addParent(two)
+tree.addChild(four)
+
+four.addParent(tree)
+
+five.addParent(two)
+
+six.addParent(two)
+six.addChild(seven)
+six.addChild(eighth)
+
+seven.addParent(six)
+
+eighth.addParent(six)
+
+console.log(
+	zero,
+	one,
+	two,
+	tree,
+	four,
+	five,
+	six,
+	seven,
+	eighth,
+)
+
+/*
 
 class Scenario
 {
+	// public static levels = new Array<Level>(
+	// 	new Level(0, null, [1]), => OK
+	// 		new Level(1, 0, [2]),
+	// 			new Level(2, 1, [3, 5, 6]),
+	// 				new Level(3, 2, [4]),
+	// 					new Level(4, 3),
+	// 				new Level(5, 2),
+	// 				new Level(6, 2, [7, 8]),
+	// 					new Level(7, 6),
+	// 					new Level(8, 6),
+	// )
+
 	public static levels = new Array<Level>(
-		new Level(0, null, [1]),
-			new Level(1, 0, [2]),
-				new Level(2, 1, [3, 5, 6]),
-					new Level(3, 2, [4]),
-						new Level(4, 3),
-					new Level(5, 2),
-					new Level(6, 2, [7, 8]),
-						new Level(7, 6),
-						new Level(8, 6),
+
 	)
 
 	public static clone(levels:Array<Level>) : Array<Level>
@@ -141,3 +212,5 @@ class Scenario
 }
 
 console.log(Scenario.search(5))
+
+*/
