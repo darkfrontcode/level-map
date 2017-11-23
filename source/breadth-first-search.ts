@@ -69,7 +69,7 @@ const seven = new Level(7)
 const eighth = new Level(8)
 
 
-zero.addChild(two)
+zero.addChild(one)
 
 one.addParent(zero)
 one.addChild(two)
@@ -94,45 +94,10 @@ seven.addParent(six)
 
 eighth.addParent(six)
 
-// console.log(
-// 	zero,
-// 	one,
-// 	two,
-// 	tree,
-// 	four,
-// 	five,
-// 	six,
-// 	seven,
-// 	eighth,
-// )
-
-
 class Scenario
 {
-	/*
-		public static levels = new Array<Level>(
-			new Level(0, null, [1]), => OK
-				new Level(1, 0, [2]),
-					new Level(2, 1, [3, 5, 6]),
-						new Level(3, 2, [4]),
-							new Level(4, 3),
-						new Level(5, 2),
-						new Level(6, 2, [7, 8]),
-							new Level(7, 6),
-							new Level(8, 6),
-		)
-	*/
 
-	public static levels = new Array<Level>(
-		one,
-		two,
-		tree,
-		four,
-		five,
-		six,
-		seven,
-		eighth
-	)
+	public static levels = new Array<Level>(zero, one, two, tree, four, five, six, seven, eighth)
 
 	public static clone(levels:Array<Level>) : Array<Level>
 	{
@@ -156,6 +121,8 @@ class Scenario
 	
 		while(true)
 		{
+			console.log(current.value)
+
 			if(current.value == target)
 			{
 				visit(current)
@@ -169,7 +136,14 @@ class Scenario
 				{
 					if(current.singleChild)
 					{
-						current = current.children[0]
+						if(!current.children[0].visited)
+						{
+							current = current.children[0]
+						}
+						else
+						{
+							current = current.parent
+						}
 					}
 					else
 					{
@@ -218,9 +192,24 @@ class Scenario
 		// 	}
 		// }
 
-		return visited
+		return [ visited, loop ]
 	}
 
 }
 
 console.log(Scenario.search(8))
+
+
+/*
+
+	zero
+		one
+			two
+				tree
+					four
+				five
+				six
+					seven
+					eighth
+
+*/
