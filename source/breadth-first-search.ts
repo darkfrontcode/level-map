@@ -5,9 +5,9 @@ class Level
 	public value:number
 	public parent:Level
 	private _children:Array<Level>
-	public singleChild:boolean
-	public hasChildren:boolean
-	public visited:boolean
+	public singleChild:boolean = false
+	public hasChildren:boolean = false
+	public visited:boolean = false
 	
 	constructor(
 		value:number, 
@@ -94,36 +94,44 @@ seven.addParent(six)
 
 eighth.addParent(six)
 
-console.log(
-	zero,
-	one,
-	two,
-	tree,
-	four,
-	five,
-	six,
-	seven,
-	eighth,
-)
+// console.log(
+// 	zero,
+// 	one,
+// 	two,
+// 	tree,
+// 	four,
+// 	five,
+// 	six,
+// 	seven,
+// 	eighth,
+// )
 
-/*
 
 class Scenario
 {
-	// public static levels = new Array<Level>(
-	// 	new Level(0, null, [1]), => OK
-	// 		new Level(1, 0, [2]),
-	// 			new Level(2, 1, [3, 5, 6]),
-	// 				new Level(3, 2, [4]),
-	// 					new Level(4, 3),
-	// 				new Level(5, 2),
-	// 				new Level(6, 2, [7, 8]),
-	// 					new Level(7, 6),
-	// 					new Level(8, 6),
-	// )
+	/*
+		public static levels = new Array<Level>(
+			new Level(0, null, [1]), => OK
+				new Level(1, 0, [2]),
+					new Level(2, 1, [3, 5, 6]),
+						new Level(3, 2, [4]),
+							new Level(4, 3),
+						new Level(5, 2),
+						new Level(6, 2, [7, 8]),
+							new Level(7, 6),
+							new Level(8, 6),
+		)
+	*/
 
 	public static levels = new Array<Level>(
-
+		one,
+		two,
+		tree,
+		four,
+		five,
+		six,
+		seven,
+		eighth
 	)
 
 	public static clone(levels:Array<Level>) : Array<Level>
@@ -155,32 +163,36 @@ class Scenario
 			}
 			else
 			{
+				visit(current)
+
 				if(current.hasChildren)
 				{
 					if(current.singleChild)
 					{
-						visit(current)
-						current = levels[current.children[0]]
+						current = current.children[0]
 					}
 					else
 					{
-						visit(current)
-						
-						for(let child of current.children)
-						{	
-							if(!visited.find(v => v == child))
-							{
-								visited.push(child)
-								current = levels[child]
-								break
+						if(current.children.every(c => c.visited))
+						{
+							current = current.parent
+						}
+						else
+						{
+							for(let child of current.children)
+							{	
+								if(!child.visited)
+								{
+									current = child
+									break
+								}
 							}
 						}
 					}
 				}
 				else
 				{
-					visit(current)
-					current = levels[current.parent]
+					current = current.parent
 				}
 			}
 
@@ -211,6 +223,4 @@ class Scenario
 
 }
 
-console.log(Scenario.search(5))
-
-*/
+console.log(Scenario.search(8))
