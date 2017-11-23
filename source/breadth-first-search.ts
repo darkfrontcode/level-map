@@ -101,28 +101,26 @@ class Scenario
 
 	public static clone(levels:Array<Level>) : Array<Level>
 	{
-		return { ...levels }
+		return [ ...levels ]
 	}
 
 	public static search(target:number)
 	{
 		const levels = this.clone(this.levels)
-		const visited = new Array<number>()
+		const visited = new Array<Level>()
 		let current = levels[0]
 		let loop = 0
 	
 		const visit = (level:Level) => {
 			if(!level.visited)
 			{
-				visited.push(level.value)
+				visited.push(level)
 				level.visited = true
 			}
 		}
 	
 		while(true)
 		{
-			console.log(current.value)
-
 			if(current.value == target)
 			{
 				visit(current)
@@ -136,14 +134,8 @@ class Scenario
 				{
 					if(current.singleChild)
 					{
-						if(!current.children[0].visited)
-						{
-							current = current.children[0]
-						}
-						else
-						{
-							current = current.parent
-						}
+						const child = current.children[0]
+						current = !child.visited ? child : current.parent
 					}
 					else
 					{
@@ -170,34 +162,40 @@ class Scenario
 				}
 			}
 
+			// safety
 			loop++
-			if(loop == 15) break
+			if(loop == levels.length * 2) break
 		}
-	
-		// const path = new Array<number>()
-		// let p = visited[visited.length - 1]
-	
-		// while(true)
-		// {
-		// 	if(p == 0)
-		// 	{
-		// 		// TODO:
-		// 		break
-		// 	}
-		// 	else
-		// 	{
-		// 		const parent = this.levels[p].parent
-		// 		path.unshift(parent)
-		// 		p = parent
-		// 	}
-		// }
 
 		return [ visited, loop ]
 	}
 
+	public static findPath(level:number) : Array<Level>
+	{
+		const levels = this.clone(this.levels)
+		const path = new Array<Level>()
+		let current = levels.find(c => c.value == level)
+
+		while(true)
+		{
+			if(current.value == 0)
+			{
+				path.unshift(current)
+				break
+			}
+			else
+			{
+				path.unshift(current)
+				current = current.parent
+			}
+		}
+
+		return path
+	}
+
 }
 
-console.log(Scenario.search(8))
+console.log(Scenario.findPath(8))
 
 
 /*
