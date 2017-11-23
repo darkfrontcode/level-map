@@ -4,40 +4,13 @@ class Level
 {
 	public value:number
 	public parent:Level
-	private _children:Array<Level>
-	public singleChild:boolean = false
-	public hasChildren:boolean = false
-	public visited:boolean = false
+	public children:Array<Level>
 	
-	constructor(
-		value:number, 
-		parent:Level = null, 
-		children:Array<Level> = new Array<Level>()
-	)
+	constructor(value:number, parent:Level = null, children:Array<Level> = null)
 	{
 		this.value = value
 		this.parent = parent
 		this.children = children
-	}
-
-	get children()
-	{
-		return this._children
-	}
-
-	set children(children:Array<Level>)
-	{
-		if(children.length > 0)
-		{
-			this.hasChildren = true
-			this.singleChild = children.length == 1
-		}
-		else
-		{
-			this.hasChildren = false
-		}
-
-		this._children = children
 	}
 
 	public addParent(parent:Level) : void
@@ -47,14 +20,12 @@ class Level
 
 	public addChild(child:Level) : void
 	{
-		const children = this.clone(this.children)
-		children.push(child)
-		this.children = children
-	}
-
-	public clone(children:Array<Level>) : Array<Level>
-	{
-		return [ ...children ]
+		if(this.children == null)
+		{
+			this.children = new Array<Level>()
+		}
+		
+		this.children.push(child)
 	}
 }
 
@@ -96,78 +67,12 @@ eighth.addParent(six)
 
 class Scenario
 {
-
+	
 	public static levels = new Array<Level>(zero, one, two, tree, four, five, six, seven, eighth)
 
 	public static clone(levels:Array<Level>) : Array<Level>
 	{
 		return [ ...levels ]
-	}
-
-	public static search(target:number)
-	{
-		const levels = this.clone(this.levels)
-		const visited = new Array<Level>()
-		let current = levels[0]
-		let loop = 0
-	
-		const visit = (level:Level) => {
-			if(!level.visited)
-			{
-				visited.push(level)
-				level.visited = true
-			}
-		}
-	
-		while(true)
-		{
-			if(current.value == target)
-			{
-				visit(current)
-				break
-			}
-			else
-			{
-				visit(current)
-
-				if(current.hasChildren)
-				{
-					if(current.singleChild)
-					{
-						const child = current.children[0]
-						current = !child.visited ? child : current.parent
-					}
-					else
-					{
-						if(current.children.every(c => c.visited))
-						{
-							current = current.parent
-						}
-						else
-						{
-							for(let child of current.children)
-							{	
-								if(!child.visited)
-								{
-									current = child
-									break
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					current = current.parent
-				}
-			}
-
-			// safety
-			loop++
-			if(loop == levels.length * 2) break
-		}
-
-		return [ visited, loop ]
 	}
 
 	public static findPath(level:number) : Array<Level>
