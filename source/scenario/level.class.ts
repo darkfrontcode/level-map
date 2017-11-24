@@ -1,8 +1,15 @@
+export interface IPath
+{
+	x:number
+	y:number
+}
+
 export class Level
 {
 	public value:number
 	public parent:Level
 	public children:Array<Level>
+	public path:Array<IPath>
 	
 	constructor(value:number, parent:Level = null, children:Array<Level> = null)
 	{
@@ -24,5 +31,10 @@ export class Level
 		}
 		
 		this.children.push(child)
+	}
+
+	public addPath(path:Array<IPath>) : void
+	{
+		this.path = path
 	}
 }

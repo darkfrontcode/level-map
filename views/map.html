@@ -7,32 +7,39 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Animate Element Along SVG Path with GSAP</title>
 	<link rel="stylesheet" href="style.css">
+	<!-- <script src="TweenMax.min.js"></script> -->
 	<script src="MorphSVGPlugin.min.js"></script>
 </head>
 <body>
 
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 786 400">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
 
 		<!-- Square -->
-		<rect id="background" width="786" height="400" fill="#333"/>
+		<rect id="background" width="600" height="600" fill="#333"/>
 
 		<!-- avatar -->
 		<circle id="avatar" cx="40" cy="40" r="40" stroke="black" stroke-width="3" fill="red" />
 
 		<g id="lines">
-			<line id="line" x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
-			<line id="line-two" x1="200" y1="200" x2="400" y2="0" style="stroke:rgb(188, 0, 235);stroke-width:2" />
-			<line id="line-three" x1="400" y1="0" x2="500" y2="300" style="stroke:rgb(191, 255, 14);stroke-width:2" />
-			<line id="line-four" x1="200" y1="200" x2="200" y2="300" style="stroke:rgb(96, 170, 255);stroke-width:2" />
-			<line id="line-five" x1="200" y1="300" x2="300" y2="350" style="stroke:rgb(248, 10, 149);stroke-width:2" />
+			<line x1="400" y1="0" 		x2="400" y2="100" 	style="stroke:rgb(255,0,0);stroke-width:2" />
+			<line x1="400" y1="100" 	x2="400" y2="200" 	style="stroke:rgb(188, 0, 235);stroke-width:2" />
+			<line x1="400" y1="200" 	x2="300" y2="300" 	style="stroke:rgb(191, 255, 14);stroke-width:2" />
+			<line x1="300" y1="300" 	x2="200" y2="400" 	style="stroke:rgb(54, 10, 248);stroke-width:2" />
+			<line x1="400" y1="200" 	x2="500" y2="300" 	style="stroke:rgb(96, 170, 255);stroke-width:2" />
+			<line x1="400" y1="200" 	x2="400" y2="300" 	style="stroke:rgb(255, 0, 157);stroke-width:2" />
+			<line x1="400" y1="300" 	x2="300" y2="400" 	style="stroke:rgb(255, 251, 0);stroke-width:2" />
+			<line x1="400" y1="300" 	x2="500" y2="400"	 style="stroke:rgb(0, 255, 242);stroke-width:2" />
 		</g>
 
-		<g id="levels">
-			<circle id="level-1-pin" data-id="1" cx="15" cy="15" r="15" fill="yellow" />
-			<circle id="level-2-pin" data-id="2" cx="15" cy="15" r="15" fill="yellow" />
-			<circle id="level-3-pin" data-id="3" cx="15" cy="15" r="15" fill="yellow" />
-			<circle id="level-4-pin" data-id="4" cx="15" cy="15" r="15" fill="yellow" />
-			<circle id="level-5-pin" data-id="5" cx="15" cy="15" r="15" fill="yellow" />
+		<g id="pins">
+			<circle data-id="1" cx="15" cy="15" r="15" fill="yellow" />
+			<circle data-id="2" cx="15" cy="15" r="15" fill="yellow" />
+			<circle data-id="3" cx="15" cy="15" r="15" fill="yellow" />
+			<circle data-id="4" cx="15" cy="15" r="15" fill="yellow" />
+			<circle data-id="5" cx="15" cy="15" r="15" fill="yellow" />
+			<circle data-id="6" cx="15" cy="15" r="15" fill="yellow" />
+			<circle data-id="7" cx="15" cy="15" r="15" fill="yellow" />
+			<circle data-id="8" cx="15" cy="15" r="15" fill="yellow" />
 		</g>
 
 	</svg>
