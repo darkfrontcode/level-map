@@ -1,8 +1,4 @@
-export interface IPath
-{
-	x:number
-	y:number
-}
+import { IPath } from './path.interface'
 
 export class Level
 {

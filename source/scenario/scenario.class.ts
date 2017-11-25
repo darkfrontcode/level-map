@@ -1,3 +1,4 @@
+import { Path } from './path.class'
 import { Level } from './level.class'
 
 export class Scenario
@@ -9,37 +10,49 @@ export class Scenario
 		this.levels = levels
 	}
 
-	public clone(levels:Array<Level>) : Array<Level>
-	{
-		return JSON.parse(JSON.stringify(levels))
-		// return [ ...levels ]
-	}
-
-	public findPath(target:number, current:number) : Array<Level>
+	public findPath(target:number, current:number) : Array<Array<Path>>
 	{
 		// console.log(this.levels)
-		const levels = this.clone(this.levels)
-		const path = new Array<Level>()
+		
+		const levels = new Array<Level>()
+		let level:Level
+		let stop:number
 
-		const conditional = target > current
-		let level = conditional ? levels[target] : levels[current]
-		const stop = conditional ? current : target
+		if(target > current)
+		{
+			level = this.levels[target]
+			stop = current
+		}
+		else
+		{
+			level = this.levels[current]
+			stop = target
+		}
 
 		while(true)
 		{
 			if(level.value == stop)
 			{
-				path.unshift(level)
+				levels.unshift(level)
 				break
 			}
 			else
 			{
-				path.unshift(level)
+				levels.unshift(level)
 				level = level.parent
 			}
 		}
 
-		return path
+		const paths = levels.map(level => {
+			const list = new Array<Path>()
+			level.path.forEach(p => {
+				list.push(new Path(p.x, p.y))
+			})
+			return list
+		})
+
+		return [ ...paths ]
+
 	}
 
 }

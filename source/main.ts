@@ -51,19 +51,18 @@ window.onload = () => {
 				{
 					const path = baseScenario.findPath(target, current)
 					path.shift()
-					console.log('forward', path[0].path)
-					path.forEach(p => tl.to(avatar, 1, { bezier: { values: p.path, type:"soft" }, ease: Power0.easeNone }))
+					path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
 				}
 				else
 				{	
 					const path = baseScenario.findPath(target, current)
 					path.shift()
 					path.map(p => {
-						p.path.reverse()
+						p.reverse()
 						return p
 					})
-					console.log('backwards', path[0].path)
-					path.forEach(p => tl.to(avatar, 1, { bezier: { values: p.path, type:"soft" }, ease: Power0.easeNone }))
+					path.reverse()
+					path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
 	
 				}
 			}
@@ -78,9 +77,5 @@ window.onload = () => {
 		xPercent: -50,
 		yPercent: -50
 	})
-	
-	// tl.to(avatar, 1, {  bezier: { values: [{x:100, y:250}, {x:300, y:0}, {x:500, y:400}], type:"soft" }, ease: Power0.easeNone })
-	// tl.to(avatar, 1, {  bezier: { values: [{x:200, y:200}, {x:300, y:300}, {x:400, y:400}], type:"soft" }, ease: Power0.easeNone })
-	// tl.reverse(0)
 
 }
