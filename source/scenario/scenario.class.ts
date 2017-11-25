@@ -11,26 +11,31 @@ export class Scenario
 
 	public clone(levels:Array<Level>) : Array<Level>
 	{
-		return [ ...levels ]
+		return JSON.parse(JSON.stringify(levels))
+		// return [ ...levels ]
 	}
 
-	public findPath(level:number) : Array<Level>
+	public findPath(target:number, current:number) : Array<Level>
 	{
+		// console.log(this.levels)
 		const levels = this.clone(this.levels)
 		const path = new Array<Level>()
-		let current = levels.find(c => c.value == level)
+
+		const conditional = target > current
+		let level = conditional ? levels[target] : levels[current]
+		const stop = conditional ? current : target
 
 		while(true)
 		{
-			if(current.value == 0)
+			if(level.value == stop)
 			{
-				path.unshift(current)
+				path.unshift(level)
 				break
 			}
 			else
 			{
-				path.unshift(current)
-				current = current.parent
+				path.unshift(level)
+				level = level.parent
 			}
 		}
 

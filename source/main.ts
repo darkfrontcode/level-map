@@ -20,6 +20,9 @@ window.onload = () => {
 	const avatar = document.getElementById("avatar")
 	const tl = new TimelineLite()
 
+	let target = 0
+	let current = 0
+
 	lines.forEach((line, key) => {
 		baseScenario.levels[key].addPath(window["MorphSVGPlugin"].pathDataToBezier(line, { align: avatar }))
 	})
@@ -35,9 +38,36 @@ window.onload = () => {
 		
 		pins[key].onclick = (event:any) => {
 
-			const target = +event.target.getAttribute("data-id")
-			const paths = baseScenario.findPath(target)
-			paths.forEach(p => tl.to(avatar, 1, { bezier: { values: p.path, type:"soft" }, ease: Power0.easeNone }))
+			current = target
+			target = +event.target.getAttribute("data-id")
+
+			console.log(target, current)
+
+			tl.kill()
+
+			if(current != target)
+			{
+				if(target > current)
+				{
+					const path = baseScenario.findPath(target, current)
+					path.shift()
+					console.log('forward', path[0].path)
+					path.forEach(p => tl.to(avatar, 1, { bezier: { values: p.path, type:"soft" }, ease: Power0.easeNone }))
+				}
+				else
+				{	
+					const path = baseScenario.findPath(target, current)
+					path.shift()
+					path.map(p => {
+						p.path.reverse()
+						return p
+					})
+					console.log('backwards', path[0].path)
+					path.forEach(p => tl.to(avatar, 1, { bezier: { values: p.path, type:"soft" }, ease: Power0.easeNone }))
+	
+				}
+			}
+
 		}
 
 	})
@@ -48,5 +78,9 @@ window.onload = () => {
 		xPercent: -50,
 		yPercent: -50
 	})
+	
+	// tl.to(avatar, 1, {  bezier: { values: [{x:100, y:250}, {x:300, y:0}, {x:500, y:400}], type:"soft" }, ease: Power0.easeNone })
+	// tl.to(avatar, 1, {  bezier: { values: [{x:200, y:200}, {x:300, y:300}, {x:400, y:400}], type:"soft" }, ease: Power0.easeNone })
+	// tl.reverse(0)
 
 }
