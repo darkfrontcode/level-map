@@ -5,8 +5,8 @@ export default <any>{
 	entry: {
 
 		app: [
-			'webpack/hot/dev-server',
-			'webpack-hot-middleware/client',
+			// 'webpack/hot/dev-server',
+			// 'webpack-hot-middleware/client',
 			path.join(__dirname, './source/main.ts')
 		],
 		search:[

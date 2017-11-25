@@ -12,15 +12,13 @@
 </head>
 <body>
 
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
 
 		<!-- Square -->
-		<rect id="background" width="600" height="600" fill="#333"/>
-
-		<!-- avatar -->
-		<circle id="avatar" cx="40" cy="40" r="40" stroke="black" stroke-width="3" fill="red" />
+		<rect id="background" width="800" height="800" fill="#333"/>
 
 		<g id="lines">
+			<line x1="400" y1="0" 		x2="400" y2="0"  	style="stroke:rgb(255,0,0);stroke-width:2" />
 			<line x1="400" y1="0" 		x2="400" y2="100" 	style="stroke:rgb(255,0,0);stroke-width:2" />
 			<line x1="400" y1="100" 	x2="400" y2="200" 	style="stroke:rgb(188, 0, 235);stroke-width:2" />
 			<line x1="400" y1="200" 	x2="300" y2="300" 	style="stroke:rgb(191, 255, 14);stroke-width:2" />
@@ -32,6 +30,7 @@
 		</g>
 
 		<g id="pins">
+			<circle data-id="0" cx="15" cy="15" r="15" fill="yellow" />
 			<circle data-id="1" cx="15" cy="15" r="15" fill="yellow" />
 			<circle data-id="2" cx="15" cy="15" r="15" fill="yellow" />
 			<circle data-id="3" cx="15" cy="15" r="15" fill="yellow" />
@@ -41,6 +40,8 @@
 			<circle data-id="7" cx="15" cy="15" r="15" fill="yellow" />
 			<circle data-id="8" cx="15" cy="15" r="15" fill="yellow" />
 		</g>
+
+		<circle id="avatar" cx="15" cy="15" r="15" stroke="black" stroke-width="3" fill="red" />
 
 	</svg>
 
