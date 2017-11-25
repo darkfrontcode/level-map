@@ -4,14 +4,41 @@ export class Level
 {
 	public value:number
 	public parent:Level
-	public children:Array<Level>
+	private _children:Array<Level>
+	public singleChild:boolean = false
+	public hasChildren:boolean = false
+	public visited:boolean = false
 	public path:Array<IPath>
 	
-	constructor(value:number, parent:Level = null, children:Array<Level> = null)
+	constructor(
+		value:number, 
+		parent:Level = null, 
+		children:Array<Level> = new Array<Level>()
+	)
 	{
 		this.value = value
 		this.parent = parent
 		this.children = children
+	}
+
+	get children()
+	{
+		return this._children
+	}
+
+	set children(children:Array<Level>)
+	{
+		if(children.length > 0)
+		{
+			this.hasChildren = true
+			this.singleChild = children.length == 1
+		}
+		else
+		{
+			this.hasChildren = false
+		}
+
+		this._children = children
 	}
 
 	public addParent(parent:Level) : void
@@ -21,16 +48,19 @@ export class Level
 
 	public addChild(child:Level) : void
 	{
-		if(this.children == null)
-		{
-			this.children = new Array<Level>()
-		}
-		
-		this.children.push(child)
+		const children = this.clone(this.children)
+		children.push(child)
+		this.children = children
+	}
+
+	public clone(children:Array<Level>) : Array<Level>
+	{
+		return [ ...children ]
 	}
 
 	public addPath(path:Array<IPath>) : void
 	{
 		this.path = path
 	}
+	
 }
