@@ -1,5 +1,5 @@
-import { Scenario, PreLevel, PreLevels } from './scenario/scenario.namespace'
-import { TimelineLite } from 'gsap'
+import { Scenario, PreLevel, PreLevels, Path } from './scenario/scenario.namespace'
+import { TimelineLite, Power0 } from 'gsap'
 
 window.onload = () => {
 	
@@ -24,16 +24,21 @@ window.onload = () => {
 	let current = 0
 
 	lines.forEach((line, key) => {
-		baseScenario.levels[key].addPath(window["MorphSVGPlugin"].pathDataToBezier(line, { align: avatar }))
+		const forward = window["MorphSVGPlugin"].pathDataToBezier(line, { align: avatar })
+		const backward = [ ...forward ].reverse()
+		baseScenario.levels[key].addPath(new Path(forward, backward))
 	})
 
 	pins.forEach((pin, key) => {
 
 		tl.set(pins[key], {
-			x: baseScenario.levels[key].path[baseScenario.levels[key].path.length - 1].x,
-			y: baseScenario.levels[key].path[baseScenario.levels[key].path.length - 1].y,
+
+			// TODO: refactory this
+			x: baseScenario.levels[key].path.forward[baseScenario.levels[key].path.forward.length - 1].x,
+			y: baseScenario.levels[key].path.forward[baseScenario.levels[key].path.forward.length - 1].y,
 			xPercent: -50,
 			yPercent: -50
+
 		})
 		
 		pins[key].onclick = (event:any) => {
@@ -47,22 +52,18 @@ window.onload = () => {
 			{
 				if(target > current)
 				{
-					console.log(baseScenario.search(target, current))
-					// console.log('DOWN', path)
-					// path.shift()
-					// path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
+					// console.log('forward', baseScenario.search(target, current))
+					const path = baseScenario.search(target, current)
+					path.forEach(level => tl.to(avatar, .5, { bezier: { values: level.path.forward, type:"soft" }, ease: Power0.easeNone }))
+					console.log(path)
 				}
 				else
 				{	
-					console.log(baseScenario.search(target, current))
-					// console.log('UP', path)
-					// path.shift()
-					// path.map(p => {
-					// 	p.reverse()
-					// 	return p
-					// })
-					// path.reverse()
-					// path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
+
+					// console.log('backward', baseScenario.search(target, current))
+					let path = baseScenario.search(target, current)
+					path.forEach(level => tl.to(avatar, .5, { bezier: { values: level.path.backward, type:"soft" }, ease: Power0.easeNone }))
+					console.log(path)
 	
 				}
 			}

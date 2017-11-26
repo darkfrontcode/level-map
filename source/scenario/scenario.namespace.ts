@@ -1,5 +1,5 @@
-export { IPath } from './path.interface'
 export { Path } from './path.class'
+export { PathPoint } from './path-point.class'
 export { PathSize } from './array-size.class'
 export { PreLevel } from './pre-level.class'
 export { PreLevels } from './pre-levels.class'

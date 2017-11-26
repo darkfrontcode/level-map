@@ -1,6 +1,4 @@
-import { Path } from './path.class'
 import { Level } from './level.class'
-import { IPath } from './path.interface';
 import { PathSize } from './array-size.class'
 
 export class Scenario
@@ -26,30 +24,18 @@ export class Scenario
 		})
 	}
 
-	public search(target:number, current:number) : any
+	public search(target:number, current:number) : Array<Level>
 	{
 		const breadthFirstSearch = this.breadthFirstSearch(target, current)
 
 		const trackTargetParent = this.trackParent(target)
 		const trackBreadthFirstSearchParent = this.trackParent(breadthFirstSearch[0].value)
 
-		let finalPath
+		const pathSize = this.defineBigAndSmall(trackTargetParent, trackBreadthFirstSearchParent)
+		const lastCommonLevel = this.lastCommonLevel(pathSize.big, pathSize.small)
+		let finalPath = this.mountPath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
 
-		const straightLines = new Array<boolean>(
-			this.straightLines(trackTargetParent),
-			this.straightLines(trackBreadthFirstSearchParent)
-		).some(check => check)
-
-		if(straightLines)
-		{
-			finalPath = breadthFirstSearch
-		}
-		else
-		{
-			const pathSize = this.defineBigAndSmall(trackTargetParent, trackBreadthFirstSearchParent)
-			const lastCommonLevel = this.lastCommonLevel(pathSize.big, pathSize.small)
-			finalPath = this.mountPath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
-		}
+		finalPath = finalPath.filter(level => level.value != current)
 
 		return finalPath
 	}
@@ -212,47 +198,47 @@ export class Scenario
 		return [...new Set([...a, ...c, ...b])].reverse()
 	}
 
-	public findPath(target:number, current:number) : Array<Array<IPath>>
-	{
-		const levels = new Array<Level>()
-		let level:Level
-		let stop:number
+	// public findPath(target:number, current:number) : Array<Array<IPath>>
+	// {
+	// 	const levels = new Array<Level>()
+	// 	let level:Level
+	// 	let stop:number
 
-		if(target > current)
-		{
-			level = this.levels[target]
-			stop = current
-		}
-		else
-		{
-			level = this.levels[current]
-			stop = target
-		}
+	// 	if(target > current)
+	// 	{
+	// 		level = this.levels[target]
+	// 		stop = current
+	// 	}
+	// 	else
+	// 	{
+	// 		level = this.levels[current]
+	// 		stop = target
+	// 	}
 
-		while(true)
-		{
-			if(level.value == stop)
-			{
-				levels.unshift(level)
-				break
-			}
-			else
-			{
-				levels.unshift(level)
-				level = level.parent
-			}
-		}
+	// 	while(true)
+	// 	{
+	// 		if(level.value == stop)
+	// 		{
+	// 			levels.unshift(level)
+	// 			break
+	// 		}
+	// 		else
+	// 		{
+	// 			levels.unshift(level)
+	// 			level = level.parent
+	// 		}
+	// 	}
 
-		const paths = levels.map(level => {
-			const list = new Array<Path>()
-			level.path.forEach(p => {
-				list.push(new Path(p.x, p.y))
-			})
-			return list
-		})
+	// 	const paths = levels.map(level => {
+	// 		const list = new Array<Path>()
+	// 		level.path.forEach(p => {
+	// 			list.push(new Path(p.x, p.y))
+	// 		})
+	// 		return list
+	// 	})
 
-		return [ ...paths ]
+	// 	return [ ...paths ]
 
-	}
+	// }
 
 }

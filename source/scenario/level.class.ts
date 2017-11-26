@@ -1,4 +1,4 @@
-import { IPath } from './path.interface'
+import { Path } from "./path.class"
 
 export class Level
 {
@@ -8,7 +8,7 @@ export class Level
 	public singleChild:boolean = false
 	public hasChildren:boolean = false
 	public visited:boolean = false
-	public path:Array<IPath>
+	public path:Path
 	
 	constructor(
 		value:number, 
@@ -58,7 +58,7 @@ export class Level
 		return [ ...children ]
 	}
 
-	public addPath(path:Array<IPath>) : void
+	public addPath(path:Path) : void
 	{
 		this.path = path
 	}
