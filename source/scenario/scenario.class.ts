@@ -1,6 +1,7 @@
 import { Path } from './path.class'
 import { Level } from './level.class'
 import { IPath } from './path.interface';
+import { PathSize } from './array-size.class'
 
 export class Scenario
 {
@@ -11,7 +12,7 @@ export class Scenario
 		this.levels = levels
 	}
 
-	unVisitAll()
+	unVisitAll() : void
 	{
 		this.levels.map(l => {
 			l.visited = false
@@ -25,24 +26,34 @@ export class Scenario
 		})
 	}
 
-	public search(target:number, current:number)
+	public search(target:number, current:number) : Array<Level>
 	{
-		const visited = this.breadthFirstSearch(target, current)
+		const breadthFirstSearch = this.breadthFirstSearch(target, current)
 
-		const trackTarget = this.trackParent(target)
-		const trackVisited = this.trackParent(visited[0].value)
+		const trackTargetParent = this.trackParent(target)
+		const trackBreadthFirstSearchParent = this.trackParent(breadthFirstSearch[0].value)
 
-		const size = this.defineBigAndSmall(trackTarget, trackVisited)
-		const lastCommonLevel = this.lastCommonLevel(size.big, size.small)
-		const deliveryFinalPath = this.deliveryFinalPath(lastCommonLevel, trackTarget, trackVisited)
-		
-		console.log(lastCommonLevel)
-		console.log(deliveryFinalPath)
-		
+		// console.log(trackTargetParent, trackBreadthFirstSearchParent)
+
+		let finalPath
+
+		if(trackTargetParent.length != 0 && trackBreadthFirstSearchParent.length != 0)
+		{
+			// console.log('in')
+			const pathSize = this.defineBigAndSmall(trackTargetParent, trackBreadthFirstSearchParent)
+			const lastCommonLevel = this.lastCommonLevel(pathSize.big, pathSize.small)
+			finalPath = this.mountPath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
+		}
+		else
+		{
+			// console.log('out')
+			finalPath = breadthFirstSearch
+		}
+
+		return finalPath
 	}
 
-	// TODO: type this
-	public breadthFirstSearch(target:number, pos:number) : any
+	public breadthFirstSearch(target:number, pos:number) : Array<Level>
 	{
 		this.unVisitAll()
 
@@ -101,7 +112,7 @@ export class Scenario
 				}
 			}
 
-			// safety
+			// TODO: Safety remove on the last release
 			loop++
 			if(loop == this.levels.length * 2) break
 		}
@@ -109,33 +120,7 @@ export class Scenario
 		return visited
 	}
 
-	public removeSimilarLevels(lastCommonLevel:number, arr:Array<Level>) : Array<Level>
-	{
-		while(true)
-		{
-			if(arr[0].value == lastCommonLevel)
-			{
-				break
-			}
-			else
-			{
-				arr.shift()
-			}
-		}
-
-		return arr
-	}
-
-	public deliveryFinalPath(lastCommonLevel:number, targetPath:Array<Level>, visitedPath:Array<Level>) : Array<Level>
-	{
-		const a = this.removeSimilarLevels(lastCommonLevel, targetPath)
-		const b = this.removeSimilarLevels(lastCommonLevel, visitedPath)
-
-		return [...new Set([...a, ...b])]
-	}
-
-	// TODO: type this
-	public defineBigAndSmall(arrA:Array<Level>, arrb:Array<Level>) : any
+	public defineBigAndSmall(arrA:Array<Level>, arrb:Array<Level>) : PathSize
 	{
 		let small:Array<Level>
 		let big:Array<Level>
@@ -151,7 +136,7 @@ export class Scenario
 			small = arrA
 		}
 
-		return { big, small }
+		return new PathSize(big, small)
 	}
 
 	public lastCommonLevel(small:Array<Level>, big:Array<Level>) : number
@@ -181,17 +166,44 @@ export class Scenario
 		{
 			if(level.value == 0)
 			{
-				levels.unshift(level)
+				levels.push(level)
 				break
 			}
 			else
 			{
-				levels.unshift(level)
+				levels.push(level)
 				level = level.parent
 			}
 		}
 
 		return levels
+	}
+
+	public removeSimilarLevels(lastCommonLevel:number, arr:Array<Level>) : Array<Level>
+	{
+		while(true)
+		{
+			if(arr[0].value == lastCommonLevel)
+			{
+				arr.shift()
+				break
+			}
+			else
+			{
+				arr.shift()
+			}
+		}
+
+		return arr
+	}
+
+	public mountPath(lastCommonLevel:number, targetPath:Array<Level>, visitedPath:Array<Level>) : Array<Level>
+	{
+		const a = this.removeSimilarLevels(lastCommonLevel, targetPath)
+		const b = this.removeSimilarLevels(lastCommonLevel, visitedPath)
+		const c = new Array<Level>(this.levels[lastCommonLevel])
+
+		return [...new Set([...a, ...c, ...b])]
 	}
 
 	public findPath(target:number, current:number) : Array<Array<IPath>>

@@ -43,30 +43,29 @@ window.onload = () => {
 
 			tl.kill()
 			
-			baseScenario.search(target, current)
-
-			// if(current != target)
-			// {
-
-			// 	if(target > current)
-			// 	{
-			// 		const path = baseScenario.search(target, current)
-			// 		path.shift()
-			// 		path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
-			// 	}
-			// 	else
-			// 	{	
-			// 		const path = baseScenario.search(target, current)
-			// 		path.shift()
-			// 		path.map(p => {
-			// 			p.reverse()
-			// 			return p
-			// 		})
-			// 		path.reverse()
-			// 		path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
+			if(current != target)
+			{
+				if(target > current)
+				{
+					baseScenario.search(target, current)
+					// console.log('DOWN', path)
+					// path.shift()
+					// path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
+				}
+				else
+				{	
+					baseScenario.search(target, current)
+					// console.log('UP', path)
+					// path.shift()
+					// path.map(p => {
+					// 	p.reverse()
+					// 	return p
+					// })
+					// path.reverse()
+					// path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
 	
-			// 	}
-			// }
+				}
+			}
 
 		}
 
