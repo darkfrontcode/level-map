@@ -47,14 +47,14 @@ window.onload = () => {
 			{
 				if(target > current)
 				{
-					baseScenario.search(target, current)
+					console.log(baseScenario.search(target, current))
 					// console.log('DOWN', path)
 					// path.shift()
 					// path.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
 				}
 				else
 				{	
-					baseScenario.search(target, current)
+					console.log(baseScenario.search(target, current))
 					// console.log('UP', path)
 					// path.shift()
 					// path.map(p => {

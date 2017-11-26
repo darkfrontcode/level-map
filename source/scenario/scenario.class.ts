@@ -14,43 +14,49 @@ export class Scenario
 
 	unVisitAll() : void
 	{
-		this.levels.map(l => {
-			l.visited = false
-			if(l.hasChildren)
+		this.levels.map(level => {
+			level.visited = false
+			if(level.hasChildren)
 			{
-				l.children.map(c => {
+				level.children.map(c => {
 					c.visited = false
 				})
 			}
-			return l
+			return level
 		})
 	}
 
-	public search(target:number, current:number) : Array<Level>
+	public search(target:number, current:number) : any
 	{
 		const breadthFirstSearch = this.breadthFirstSearch(target, current)
 
 		const trackTargetParent = this.trackParent(target)
 		const trackBreadthFirstSearchParent = this.trackParent(breadthFirstSearch[0].value)
 
-		// console.log(trackTargetParent, trackBreadthFirstSearchParent)
-
 		let finalPath
 
-		if(trackTargetParent.length != 0 && trackBreadthFirstSearchParent.length != 0)
+		const straightLines = new Array<boolean>(
+			this.straightLines(trackTargetParent),
+			this.straightLines(trackBreadthFirstSearchParent)
+		).some(check => check)
+
+		if(straightLines)
 		{
-			// console.log('in')
+			finalPath = breadthFirstSearch
+		}
+		else
+		{
 			const pathSize = this.defineBigAndSmall(trackTargetParent, trackBreadthFirstSearchParent)
 			const lastCommonLevel = this.lastCommonLevel(pathSize.big, pathSize.small)
 			finalPath = this.mountPath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
 		}
-		else
-		{
-			// console.log('out')
-			finalPath = breadthFirstSearch
-		}
 
 		return finalPath
+	}
+
+	public straightLines(levels: Array<Level>)
+	{
+		return levels.length == 1 && levels[0].value == 0
 	}
 
 	public breadthFirstSearch(target:number, pos:number) : Array<Level>
@@ -166,12 +172,12 @@ export class Scenario
 		{
 			if(level.value == 0)
 			{
-				levels.push(level)
+				levels.unshift(level)
 				break
 			}
 			else
 			{
-				levels.push(level)
+				levels.unshift(level)
 				level = level.parent
 			}
 		}
@@ -199,11 +205,11 @@ export class Scenario
 
 	public mountPath(lastCommonLevel:number, targetPath:Array<Level>, visitedPath:Array<Level>) : Array<Level>
 	{
-		const a = this.removeSimilarLevels(lastCommonLevel, targetPath)
+		const a = this.removeSimilarLevels(lastCommonLevel, targetPath).reverse()
 		const b = this.removeSimilarLevels(lastCommonLevel, visitedPath)
 		const c = new Array<Level>(this.levels[lastCommonLevel])
 
-		return [...new Set([...a, ...c, ...b])]
+		return [...new Set([...a, ...c, ...b])].reverse()
 	}
 
 	public findPath(target:number, current:number) : Array<Array<IPath>>
