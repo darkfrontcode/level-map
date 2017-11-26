@@ -1,5 +1,5 @@
 import { Scenario, PreLevel, PreLevels } from './scenario/scenario.namespace'
-import { TimelineLite, Power0 } from 'gsap'
+import { TimelineLite } from 'gsap'
 
 window.onload = () => {
 	

@@ -25,11 +25,27 @@ export class Scenario
 		})
 	}
 
-	public search(target:number, pos:number)
+	public search(target:number, current:number)
 	{
+		const visited = this.breadthFirstSearch(target, current)
 
-		console.log(target, pos)
+		const trackTarget = this.trackParent(target)
+		const trackVisited = this.trackParent(visited[0].value)
+
+		const size = this.defineBigAndSmall(trackTarget, trackVisited)
+		const lastCommonLevel = this.lastCommonLevel(size.big, size.small)
+		const deliveryFinalPath = this.deliveryFinalPath(lastCommonLevel, trackTarget, trackVisited)
+		
+		console.log(lastCommonLevel)
+		console.log(deliveryFinalPath)
+		
+	}
+
+	// TODO: type this
+	public breadthFirstSearch(target:number, pos:number) : any
+	{
 		this.unVisitAll()
+
 		const visited = new Array<Level>()
 		let current = this.levels[pos]
 		let loop = 0
@@ -89,39 +105,71 @@ export class Scenario
 			loop++
 			if(loop == this.levels.length * 2) break
 		}
+		
+		return visited
+	}
 
-		console.log('visited', visited)
-		console.log('track target', this.trackParent(target))
-		console.log('track result', this.trackParent(visited[0].value))
-
-		const trackTarget = this.trackParent(target)
-		const trackVisited = this.trackParent(visited[0].value)
-
-		let small:Array<Level>
-		let big:Array<Level>
-
-		if(trackTarget.length > trackVisited.length)
+	public removeSimilarLevels(lastCommonLevel:number, arr:Array<Level>) : Array<Level>
+	{
+		while(true)
 		{
-			big = trackTarget
-			small = trackVisited
-		}
-		else
-		{
-			big = trackVisited
-			small = trackTarget
-		}
-
-		for(let [key, level] of small.entries())
-		{
-			if(level.value != big[key].value || big[key].value == undefined)
+			if(arr[0].value == lastCommonLevel)
 			{
-				// TODO:
-				big[key - 1].value
 				break
+			}
+			else
+			{
+				arr.shift()
 			}
 		}
 
-		return [ visited, loop ]
+		return arr
+	}
+
+	public deliveryFinalPath(lastCommonLevel:number, targetPath:Array<Level>, visitedPath:Array<Level>) : Array<Level>
+	{
+		const a = this.removeSimilarLevels(lastCommonLevel, targetPath)
+		const b = this.removeSimilarLevels(lastCommonLevel, visitedPath)
+
+		return [...new Set([...a, ...b])]
+	}
+
+	// TODO: type this
+	public defineBigAndSmall(arrA:Array<Level>, arrb:Array<Level>) : any
+	{
+		let small:Array<Level>
+		let big:Array<Level>
+
+		if(arrA.length > arrb.length)
+		{
+			big = arrA
+			small = arrb
+		}
+		else
+		{
+			big = arrb
+			small = arrA
+		}
+
+		return { big, small }
+	}
+
+	public lastCommonLevel(small:Array<Level>, big:Array<Level>) : number
+	{
+		for(let [key, level] of small.entries())
+		{
+			try
+			{
+				if(level.value != big[key].value)
+				{
+					return big[key - 1].value
+				}
+			}
+			catch(err)
+			{
+				return big[key - 1].value
+			}
+		}
 	}
 
 	public trackParent(target:number) : Array<Level>
