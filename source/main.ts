@@ -1,5 +1,7 @@
 import { Scenario, PreLevel, PreLevels, Path } from './scenario/scenario.namespace'
 import { TimelineLite, Power0 } from 'gsap'
+import { Level } from './scenario/level.class';
+// import { PathPoint } from './scenario/path-point.class'
 
 window.onload = () => {
 	
@@ -29,6 +31,16 @@ window.onload = () => {
 		baseScenario.levels[key].addPath(new Path(forward, backward))
 	})
 
+	// baseScenario.levels[0].addPath(new Path(new Array<PathPoint>({x:400, y:0}, {x:400, y:0}), new Array<PathPoint>({x:400, y:0}, {x:400, y:0})))
+	// baseScenario.levels[1].addPath(new Path(new Array<PathPoint>({x:400, y:0}, {x:400, y:100}), new Array<PathPoint>({x:400, y:100}, {x:400, y:0})))
+	// baseScenario.levels[2].addPath(new Path(new Array<PathPoint>({x:400, y:100}, {x:400, y:200}), new Array<PathPoint>({x:400, y:200}, {x:400, y:100})))
+	// baseScenario.levels[3].addPath(new Path(new Array<PathPoint>({x:400, y:200}, {x:300, y:300}), new Array<PathPoint>({x:300, y:300}, {x:400, y:200})))
+	// baseScenario.levels[4].addPath(new Path(new Array<PathPoint>({x:300, y:300}, {x:200, y:400}), new Array<PathPoint>({x:200, y:400}, {x:300, y:300})))
+	// baseScenario.levels[5].addPath(new Path(new Array<PathPoint>({x:400, y:200}, {x:500, y:300}), new Array<PathPoint>({x:500, y:300}, {x:400, y:200})))
+	// baseScenario.levels[6].addPath(new Path(new Array<PathPoint>({x:400, y:200}, {x:400, y:300}), new Array<PathPoint>({x:400, y:300}, {x:400, y:200})))
+	// baseScenario.levels[7].addPath(new Path(new Array<PathPoint>({x:400, y:300}, {x:300, y:400}), new Array<PathPoint>({x:300, y:400}, {x:400, y:300})))
+	// baseScenario.levels[8].addPath(new Path(new Array<PathPoint>({x:400, y:300}, {x:500, y:400}), new Array<PathPoint>({x:500, y:400}, {x:400, y:300})))
+
 	pins.forEach((pin, key) => {
 
 		tl.set(pins[key], {
@@ -50,22 +62,33 @@ window.onload = () => {
 			
 			if(current != target)
 			{
-				if(target > current)
-				{
-					// console.log('forward', baseScenario.search(target, current))
-					const path = baseScenario.search(target, current)
-					path.forEach(level => tl.to(avatar, .5, { bezier: { values: level.path.forward, type:"soft" }, ease: Power0.easeNone }))
-					console.log(path)
-				}
-				else
-				{	
+				const list = baseScenario.search(target, current)
+				console.log(list)
+				const size = list.length - 1
 
-					// console.log('backward', baseScenario.search(target, current))
-					let path = baseScenario.search(target, current)
-					path.forEach(level => tl.to(avatar, .5, { bezier: { values: level.path.backward, type:"soft" }, ease: Power0.easeNone }))
-					console.log(path)
-	
-				}
+				list.forEach((level, key) => {
+
+					const next = list[key+1]
+
+					if(size != key)
+					{
+						// const isChild = level.children.find(r => r.value == next.value)
+
+						if(next.parent.value == level.value)
+						{
+							tl.to(avatar, .5, { bezier: { values: level.path.forward, type:"cubic" }, ease: Power0.easeNone })
+						}
+						else if(level.parent.value == next.value)
+						{
+							tl.to(avatar, .5, { bezier: { values: level.path.backward, type:"cubic" }, ease: Power0.easeNone })
+						}
+					}
+					else
+					{
+						tl.to(avatar, .5, { bezier: { values: level.path.forward, type:"cubic" }, ease: Power0.easeNone })
+					}
+
+				})
 			}
 
 		}

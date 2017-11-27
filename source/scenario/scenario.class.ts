@@ -35,7 +35,7 @@ export class Scenario
 		const lastCommonLevel = this.lastCommonLevel(pathSize.big, pathSize.small)
 		let finalPath = this.mountPath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
 
-		finalPath = finalPath.filter(level => level.value != current)
+		// finalPath = finalPath.filter(level => level.value != current)
 
 		return finalPath
 	}
@@ -197,48 +197,5 @@ export class Scenario
 
 		return [...new Set([...a, ...c, ...b])].reverse()
 	}
-
-	// public findPath(target:number, current:number) : Array<Array<IPath>>
-	// {
-	// 	const levels = new Array<Level>()
-	// 	let level:Level
-	// 	let stop:number
-
-	// 	if(target > current)
-	// 	{
-	// 		level = this.levels[target]
-	// 		stop = current
-	// 	}
-	// 	else
-	// 	{
-	// 		level = this.levels[current]
-	// 		stop = target
-	// 	}
-
-	// 	while(true)
-	// 	{
-	// 		if(level.value == stop)
-	// 		{
-	// 			levels.unshift(level)
-	// 			break
-	// 		}
-	// 		else
-	// 		{
-	// 			levels.unshift(level)
-	// 			level = level.parent
-	// 		}
-	// 	}
-
-	// 	const paths = levels.map(level => {
-	// 		const list = new Array<Path>()
-	// 		level.path.forEach(p => {
-	// 			list.push(new Path(p.x, p.y))
-	// 		})
-	// 		return list
-	// 	})
-
-	// 	return [ ...paths ]
-
-	// }
 
 }
