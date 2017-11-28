@@ -41,111 +41,97 @@ export class Scenario
 	}
 
 	public prepareToTimeLine(levels:Array<Level>) : Array<Array<PathPoint>> 
-	{
-		/*
-			level.parent.value == next.parent.value => skip parent timeline
-			level.parent.value == next.value => backwards
-			prev.parent.value == next.parent.value => skip level from time line
-		*/
+	{	
+		let current, next, prev, parent, size
 
 		const paths = new Array<Array<PathPoint>>()
 
+		/** Two elements only **/
 		if(levels.length == 2)
 		{
-			const current = levels[0]
-			const next = levels[1]
+			current = levels[0]
+			next = levels[1]
 
-			if(current.parent.value == next.value)
+			if(levels[0].value == 0)
 			{
-				// backwards
-				paths.push(current.path.backward)
+				paths.push(next.path.forward)
 			}
 			else
 			{
-				// forward
-				paths.push(next.path.forward)
+				if(current.parent.value == next.value)
+					paths.push(current.path.backward)
+				else 
+					paths.push(next.path.forward)
 			}
 		}
 		else
 		{
-			const size = levels.length - 1
+			size = levels.length - 1
 
 			for(let [key, level] of levels.entries())
 			{
 				// remove first and last
 				if(key != size && key !== 0)
 				{
-					const prev = levels[key - 1] || undefined
-					const next = levels[key + 1] || undefined
-					const parent = prev.parent != undefined && next.parent != undefined
+					prev = levels[key - 1] || undefined
+					next = levels[key + 1] || undefined
+					parent = prev.parent != undefined && next.parent != undefined
 	
 					if(parent)
 					{
 						if(prev.parent.value != next.parent.value)
 						{
 							if(level.parent.value == next.value)
-							{
-								// backwards
 								paths.push(level.path.backward)
-							}
 							else
-							{
-								// forward
 								paths.push(level.path.forward)
-							}
 						}
 					}
 					else
 					{
 						if(level.parent.value == next.value)
-						{
-							// backwards
 							paths.push(level.path.backward)
-						}
 						else
-						{
-							// forward
 							paths.push(level.path.forward)
-						}
 					}
 	
 				}
-				// TODO:
 				else if(key == 0)
 				{
+					/** first level case **/
+
 					if(level.parent == undefined)
 					{
-						// forward
 						paths.push(level.path.forward)
 					}
-					else
+					else if(level.parent.value != 0)
 					{
-						const next = levels[key + 1]
-	
+						next = levels[key + 1]
+						
 						if(level.parent.value == next.value)
-						{
-							// backwards
 							paths.push(level.path.backward)
-						}
 						else
-						{
-							// forward
 							paths.push(level.path.forward)
-						}
 					}
 				}
 				else
 				{
-					// TODO:
-					// last
-					if(level.value > level.parent.value)
-					{
-						paths.push(level.path.forward)
-					}
-					else
+					/** Last level case **/
+
+					if(levels[levels.length - 1].value == 0)
 					{
 						paths.push(level.path.backward)
 					}
+					else if(level.parent.value != 0)
+					{
+						prev = levels[size - 1]
+						
+						if(level.value > prev.value)
+							paths.push(level.path.forward)
+						else
+							paths.push(level.path.backward)
+					}
+
 				}
 	
 			}
