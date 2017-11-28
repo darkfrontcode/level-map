@@ -49,23 +49,51 @@ export class Scenario
 		*/
 
 		const paths = new Array<Array<PathPoint>>()
-		const size = levels.length - 1
 
-		for(let [key, level] of levels.entries())
+		if(levels.length == 2)
 		{
-			// remove first and last
-			if(key != size && key !== 0)
-			{
-				const prev = levels[key - 1] || undefined
-				const next = levels[key + 1] || undefined
-				const parent = prev.parent != undefined && next.parent != undefined
+			const current = levels[0]
+			const next = levels[1]
 
-				if(parent)
+			if(current.parent.value == next.value)
+			{
+				// backwards
+				paths.push(current.path.backward)
+			}
+			else
+			{
+				// forward
+				paths.push(next.path.forward)
+			}
+		}
+		else
+		{
+			const size = levels.length - 1
+
+			for(let [key, level] of levels.entries())
+			{
+				// remove first and last
+				if(key != size && key !== 0)
 				{
-					if(prev.parent.value == next.parent.value)
+					const prev = levels[key - 1] || undefined
+					const next = levels[key + 1] || undefined
+					const parent = prev.parent != undefined && next.parent != undefined
+	
+					if(parent)
 					{
-						console.log('skep:', level.value)
-						// TODO: skip
+						if(prev.parent.value != next.parent.value)
+						{
+							if(level.parent.value == next.value)
+							{
+								// backwards
+								paths.push(level.path.backward)
+							}
+							else
+							{
+								// forward
+								paths.push(level.path.forward)
+							}
+						}
 					}
 					else
 					{
@@ -80,58 +108,47 @@ export class Scenario
 							paths.push(level.path.forward)
 						}
 					}
+	
 				}
-				else
+				// TODO:
+				else if(key == 0)
 				{
-					if(level.parent.value == next.value)
-					{
-						// backwards
-						paths.push(level.path.backward)
-					}
-					else
+					if(level.parent == undefined)
 					{
 						// forward
 						paths.push(level.path.forward)
 					}
-				}
-
-			}
-			else if(key == 0)
-			{
-				if(level.parent == undefined)
-				{
-					// forward
-					paths.push(level.path.forward)
+					else
+					{
+						const next = levels[key + 1]
+	
+						if(level.parent.value == next.value)
+						{
+							// backwards
+							paths.push(level.path.backward)
+						}
+						else
+						{
+							// forward
+							paths.push(level.path.forward)
+						}
+					}
 				}
 				else
 				{
-					const next = levels[key + 1]
-
-					if(level.parent.value == next.value)
+					// TODO:
+					// last
+					if(level.value > level.parent.value)
 					{
-						// backwards
-						paths.push(level.path.backward)
+						paths.push(level.path.forward)
 					}
 					else
 					{
-						// forward
-						paths.push(level.path.forward)
+						paths.push(level.path.backward)
 					}
 				}
+	
 			}
-			else
-			{
-				// last
-				if(level.value > level.parent.value)
-				{
-					paths.push(level.path.forward)
-				}
-				else
-				{
-					paths.push(level.path.backward)
-				}
-			}
-
 		}
 
 		return paths
@@ -148,7 +165,6 @@ export class Scenario
 
 		const visited = new Array<Level>()
 		let current = this.levels[pos]
-		let loop = 0
 	
 		const visit = (level:Level) => {
 			if(!level.visited)
@@ -200,10 +216,6 @@ export class Scenario
 					current = current.parent
 				}
 			}
-
-			// TODO: Safety remove on the last release
-			loop++
-			if(loop == this.levels.length * 2) break
 		}
 		
 		return visited
