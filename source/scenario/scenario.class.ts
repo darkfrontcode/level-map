@@ -1,5 +1,6 @@
 import { Level } from './level.class'
 import { PathSize } from './array-size.class'
+import { PathPoint } from './path-point.class'
 
 export class Scenario
 {
@@ -24,7 +25,7 @@ export class Scenario
 		})
 	}
 
-	public search(target:number, current:number) : Array<Level>
+	public search(target:number, current:number) : Array<Array<PathPoint>>
 	{
 		const breadthFirstSearch = this.breadthFirstSearch(target, current)
 
@@ -33,11 +34,107 @@ export class Scenario
 
 		const pathSize = this.defineBigAndSmall(trackTargetParent, trackBreadthFirstSearchParent)
 		const lastCommonLevel = this.lastCommonLevel(pathSize.big, pathSize.small)
-		let finalPath = this.mountPath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
+		const finalPath = this.mountPath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
 
-		// finalPath = finalPath.filter(level => level.value != current)
+		const prepareToTimeLine = this.prepareToTimeLine(finalPath)
+		return prepareToTimeLine
+	}
 
-		return finalPath
+	public prepareToTimeLine(levels:Array<Level>) : Array<Array<PathPoint>> 
+	{
+		/*
+			level.parent.value == next.parent.value => skip parent timeline
+			level.parent.value == next.value => backwards
+			prev.parent.value == next.parent.value => skip level from time line
+		*/
+
+		const paths = new Array<Array<PathPoint>>()
+		const size = levels.length - 1
+
+		for(let [key, level] of levels.entries())
+		{
+			// remove first and last
+			if(key != size && key !== 0)
+			{
+				const prev = levels[key - 1] || undefined
+				const next = levels[key + 1] || undefined
+				const parent = prev.parent != undefined && next.parent != undefined
+
+				if(parent)
+				{
+					if(prev.parent.value == next.parent.value)
+					{
+						console.log('skep:', level.value)
+						// TODO: skip
+					}
+					else
+					{
+						if(level.parent.value == next.value)
+						{
+							// backwards
+							paths.push(level.path.backward)
+						}
+						else
+						{
+							// forward
+							paths.push(level.path.forward)
+						}
+					}
+				}
+				else
+				{
+					if(level.parent.value == next.value)
+					{
+						// backwards
+						paths.push(level.path.backward)
+					}
+					else
+					{
+						// forward
+						paths.push(level.path.forward)
+					}
+				}
+
+			}
+			else if(key == 0)
+			{
+				if(level.parent == undefined)
+				{
+					// forward
+					paths.push(level.path.forward)
+				}
+				else
+				{
+					const next = levels[key + 1]
+
+					if(level.parent.value == next.value)
+					{
+						// backwards
+						paths.push(level.path.backward)
+					}
+					else
+					{
+						// forward
+						paths.push(level.path.forward)
+					}
+				}
+			}
+			else
+			{
+				// last
+				if(level.value > level.parent.value)
+				{
+					paths.push(level.path.forward)
+				}
+				else
+				{
+					paths.push(level.path.backward)
+				}
+			}
+
+		}
+
+		return paths
 	}
 
 	public straightLines(levels: Array<Level>)

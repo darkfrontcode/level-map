@@ -1,6 +1,6 @@
 import { Scenario, PreLevel, PreLevels, Path } from './scenario/scenario.namespace'
 import { TimelineLite, Power0 } from 'gsap'
-import { Level } from './scenario/level.class';
+// import { Level } from './scenario/level.class'
 // import { PathPoint } from './scenario/path-point.class'
 
 window.onload = () => {
@@ -63,32 +63,9 @@ window.onload = () => {
 			if(current != target)
 			{
 				const list = baseScenario.search(target, current)
+				list.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
 				console.log(list)
-				const size = list.length - 1
 
-				list.forEach((level, key) => {
-
-					const next = list[key+1]
-
-					if(size != key)
-					{
-						// const isChild = level.children.find(r => r.value == next.value)
-
-						if(next.parent.value == level.value)
-						{
-							tl.to(avatar, .5, { bezier: { values: level.path.forward, type:"cubic" }, ease: Power0.easeNone })
-						}
-						else if(level.parent.value == next.value)
-						{
-							tl.to(avatar, .5, { bezier: { values: level.path.backward, type:"cubic" }, ease: Power0.easeNone })
-						}
-					}
-					else
-					{
-						tl.to(avatar, .5, { bezier: { values: level.path.forward, type:"cubic" }, ease: Power0.easeNone })
-					}
-
-				})
 			}
 
 		}
