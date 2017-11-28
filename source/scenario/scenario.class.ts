@@ -1,7 +1,8 @@
 import { Level } from './level.class'
-import { PathSize } from './array-size.class'
+import { PathSize } from './path-size.class'
 import { PathPoint } from './path-point.class'
 
+// TODO:change name to LevelMap
 export class Scenario
 {
 	public levels:Array<Level>
@@ -15,12 +16,7 @@ export class Scenario
 	{
 		this.levels.map(level => {
 			level.visited = false
-			if(level.hasChildren)
-			{
-				level.children.map(c => {
-					c.visited = false
-				})
-			}
+			if(level.hasChildren) level.children.map(child => child.visited = false)
 			return level
 		})
 	}
@@ -34,13 +30,12 @@ export class Scenario
 
 		const pathSize = this.defineBigAndSmall(trackTargetParent, trackBreadthFirstSearchParent)
 		const lastCommonLevel = this.lastCommonLevel(pathSize.big, pathSize.small)
-		const finalPath = this.mountPath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
+		const finalPath = this.mergePath(lastCommonLevel, trackTargetParent, trackBreadthFirstSearchParent)
 
-		const prepareToTimeLine = this.prepareToTimeLine(finalPath)
-		return prepareToTimeLine
+		return this.buildTimelinePath(finalPath)
 	}
 
-	public prepareToTimeLine(levels:Array<Level>) : Array<Array<PathPoint>> 
+	public buildTimelinePath(levels:Array<Level>) : Array<Array<PathPoint>> 
 	{	
 		let current, next, prev, parent, size
 
@@ -138,11 +133,6 @@ export class Scenario
 		}
 
 		return paths
-	}
-
-	public straightLines(levels: Array<Level>)
-	{
-		return levels.length == 1 && levels[0].value == 0
 	}
 
 	public breadthFirstSearch(target:number, pos:number) : Array<Level>
@@ -284,7 +274,7 @@ export class Scenario
 		return arr
 	}
 
-	public mountPath(lastCommonLevel:number, targetPath:Array<Level>, visitedPath:Array<Level>) : Array<Level>
+	public mergePath(lastCommonLevel:number, targetPath:Array<Level>, visitedPath:Array<Level>) : Array<Level>
 	{
 		const a = this.removeSimilarLevels(lastCommonLevel, targetPath).reverse()
 		const b = this.removeSimilarLevels(lastCommonLevel, visitedPath)

@@ -8,9 +8,6 @@ export default <any>{
 			// 'webpack/hot/dev-server',
 			// 'webpack-hot-middleware/client',
 			path.join(__dirname, './source/main.ts')
-		],
-		search:[
-			path.join(__dirname, './source/breadth-first-search.ts')
 		]
 		
 	},

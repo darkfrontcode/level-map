@@ -1,7 +1,5 @@
 import { Scenario, PreLevel, PreLevels, Path } from './scenario/scenario.namespace'
 import { TimelineLite, Power0 } from 'gsap'
-// import { Level } from './scenario/level.class'
-// import { PathPoint } from './scenario/path-point.class'
 
 window.onload = () => {
 	
@@ -31,16 +29,6 @@ window.onload = () => {
 		baseScenario.levels[key].addPath(new Path(forward, backward))
 	})
 
-	// baseScenario.levels[0].addPath(new Path(new Array<PathPoint>({x:400, y:0}, {x:400, y:0}), new Array<PathPoint>({x:400, y:0}, {x:400, y:0})))
-	// baseScenario.levels[1].addPath(new Path(new Array<PathPoint>({x:400, y:0}, {x:400, y:100}), new Array<PathPoint>({x:400, y:100}, {x:400, y:0})))
-	// baseScenario.levels[2].addPath(new Path(new Array<PathPoint>({x:400, y:100}, {x:400, y:200}), new Array<PathPoint>({x:400, y:200}, {x:400, y:100})))
-	// baseScenario.levels[3].addPath(new Path(new Array<PathPoint>({x:400, y:200}, {x:300, y:300}), new Array<PathPoint>({x:300, y:300}, {x:400, y:200})))
-	// baseScenario.levels[4].addPath(new Path(new Array<PathPoint>({x:300, y:300}, {x:200, y:400}), new Array<PathPoint>({x:200, y:400}, {x:300, y:300})))
-	// baseScenario.levels[5].addPath(new Path(new Array<PathPoint>({x:400, y:200}, {x:500, y:300}), new Array<PathPoint>({x:500, y:300}, {x:400, y:200})))
-	// baseScenario.levels[6].addPath(new Path(new Array<PathPoint>({x:400, y:200}, {x:400, y:300}), new Array<PathPoint>({x:400, y:300}, {x:400, y:200})))
-	// baseScenario.levels[7].addPath(new Path(new Array<PathPoint>({x:400, y:300}, {x:300, y:400}), new Array<PathPoint>({x:300, y:400}, {x:400, y:300})))
-	// baseScenario.levels[8].addPath(new Path(new Array<PathPoint>({x:400, y:300}, {x:500, y:400}), new Array<PathPoint>({x:500, y:400}, {x:400, y:300})))
-
 	pins.forEach((pin, key) => {
 
 		tl.set(pins[key], {
@@ -62,9 +50,9 @@ window.onload = () => {
 			
 			if(current != target)
 			{
-				const list = baseScenario.search(target, current)
-				list.forEach(p => tl.to(avatar, .5, { bezier: { values: p, type:"soft" }, ease: Power0.easeNone }))
-				console.log(list)
+				baseScenario
+					.search(target, current)
+					.forEach(path => tl.to(avatar, .5, { bezier: { values: path, type:"soft" }, ease: Power0.easeNone }))
 
 			}
 
