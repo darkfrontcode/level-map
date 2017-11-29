@@ -1,11 +1,11 @@
-import { PathPoint } from "./path-point.class"
+import { Point } from "./point.class"
 
 export class Path
 {
-	public forward:Array<PathPoint>
-	public backward:Array<PathPoint>
+	public forward:Array<Point>
+	public backward:Array<Point>
 
-	constructor(forward:Array<PathPoint>, backward:Array<PathPoint>)
+	constructor(forward:Array<Point>, backward:Array<Point>)
 	{
 		this.forward = forward
 		this.backward = backward

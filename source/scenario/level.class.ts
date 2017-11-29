@@ -53,7 +53,7 @@ export class Level
 		this.children = children
 	}
 
-	public clone(children:Array<Level>) : Array<Level>
+	private clone(children:Array<Level>) : Array<Level>
 	{
 		return [ ...children ]
 	}

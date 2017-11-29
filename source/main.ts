@@ -13,7 +13,7 @@ window.onload = () => {
 		new PreLevel(6, 2, [7, 8]),
 		new PreLevel(7, 6),
 		new PreLevel(8, 6),
-	)).list)
+	)).levels)
 
 	const lines = document.getElementById("lines").querySelectorAll("line")
 	const pins = document.getElementById("pins").querySelectorAll("circle")

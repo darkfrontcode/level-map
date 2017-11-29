@@ -1,6 +1,6 @@
 export { Path } from './path.class'
-export { PathPoint } from './path-point.class'
-export { PathSize } from './path-size.class'
+export { Point } from './point.class'
+export { ArrayCompare } from './array-compare.class'
 export { PreLevel } from './pre-level.class'
 export { PreLevels } from './pre-levels.class'
 export { Level } from './level.class'

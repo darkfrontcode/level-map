@@ -3,11 +3,11 @@ import { PreLevel } from './pre-level.class'
 
 export class PreLevels
 {
-	public list:Array<Level>
+	public levels:Array<Level>
 
 	constructor(preLevels:Array<PreLevel>)
 	{
-		this.list = new Array<Level>()
+		this.levels = new Array<Level>()
 		this.buildList(preLevels)
 		this.buildProps(preLevels)
 	}
@@ -16,7 +16,7 @@ export class PreLevels
 	{
 		for(let preLevel of preLevels)
 		{
-			this.list.push(new Level(preLevel.value))
+			this.levels.push(new Level(preLevel.value))
 		}
 	}
 
@@ -24,11 +24,11 @@ export class PreLevels
 	{
 		for(let preLevel of preLevels)
 		{
-			const level = this.list[preLevel.value]
-			const parent = this.list[preLevel.parent]
+			const level = this.levels[preLevel.value]
+			const parent = this.levels[preLevel.parent]
 
 			level.addParent(parent)
-			preLevel.children.map(c => level.addChild(this.list[c]))
+			preLevel.children.map(child => level.addChild(this.levels[child]))
 		}
 	}
 }

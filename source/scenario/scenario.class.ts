@@ -1,6 +1,6 @@
 import { Level } from './level.class'
-import { PathSize } from './path-size.class'
-import { PathPoint } from './path-point.class'
+import { ArrayCompare } from './array-compare.class'
+import { Point } from './point.class'
 
 // TODO:change name to LevelMap
 export class Scenario
@@ -12,16 +12,7 @@ export class Scenario
 		this.levels = levels
 	}
 
-	unVisitAll() : void
-	{
-		this.levels.map(level => {
-			level.visited = false
-			if(level.hasChildren) level.children.map(child => child.visited = false)
-			return level
-		})
-	}
-
-	public search(target:number, current:number) : Array<Array<PathPoint>>
+	public search(target:number, current:number) : Array<Array<Point>>
 	{
 		const breadthFirstSearch = this.breadthFirstSearch(target, current)
 
@@ -35,11 +26,99 @@ export class Scenario
 		return this.buildTimelinePath(finalPath)
 	}
 
-	public buildTimelinePath(levels:Array<Level>) : Array<Array<PathPoint>> 
+
+	private breadthFirstSearch(target:number, current:number) : Array<Level>
+	{
+		this.unVisitAll()
+
+		const visited = new Array<Level>()
+		let level = this.levels[current]
+	
+		const visit = (level:Level) => {
+			if(!level.visited)
+			{
+				visited.push(level)
+				level.visited = true
+			}
+		}
+	
+		while(true)
+		{
+			if(level.value == target)
+			{
+				visit(level)
+				break
+			}
+			else
+			{
+				visit(level)
+
+				if(level.hasChildren)
+				{
+					if(level.singleChild)
+					{
+						const child = level.children[0]
+						level = !child.visited ? child : level.parent
+					}
+					else
+					{
+						if(level.children.every(c => c.visited))
+						{
+							level = level.parent
+						}
+						else
+						{
+							for(let child of level.children)
+							{	
+								if(!child.visited)
+								{
+									level = child
+									break
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					level = level.parent
+				}
+			}
+		}
+		
+		return visited
+	}
+
+
+	private unVisitAll() : void
+	{
+		for(let level of this.levels)
+		{
+			level.visited = false
+
+			if(level.hasChildren)
+			{
+				for(let child of level.children)
+				{
+					child.visited = false
+				}
+			}
+		}
+	}
+
+	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>> 
 	{	
 		let current, next, prev, parent, size
 
-		const paths = new Array<Array<PathPoint>>()
+		const paths = new Array<Array<Point>>()
+
+		const setDirection = (level:Level, next:Level) => {
+
+			if(level.parent.value == next.value)
+				paths.push(level.path.backward)
+			else
+				paths.push(level.path.forward)
+		}
 
 		/** Two elements only **/
 		if(levels.length == 2)
@@ -68,26 +147,20 @@ export class Scenario
 				// remove first and last
 				if(key != size && key !== 0)
 				{
-					prev = levels[key - 1] || undefined
-					next = levels[key + 1] || undefined
-					parent = prev.parent != undefined && next.parent != undefined
+					prev = levels[key - 1]
+					next = levels[key + 1]
+					parent = prev.parent && next.parent
 	
 					if(parent)
 					{
 						if(prev.parent.value != next.parent.value)
 						{
-							if(level.parent.value == next.value)
-								paths.push(level.path.backward)
-							else
-								paths.push(level.path.forward)
+							setDirection(level, next)
 						}
 					}
 					else
 					{
-						if(level.parent.value == next.value)
-							paths.push(level.path.backward)
-						else
-							paths.push(level.path.forward)
+						setDirection(level, next)
 					}
 	
 				}
@@ -102,11 +175,7 @@ export class Scenario
 					else if(level.parent.value != 0)
 					{
 						next = levels[key + 1]
-						
-						if(level.parent.value == next.value)
-							paths.push(level.path.backward)
-						else
-							paths.push(level.path.forward)
+						setDirection(level, next)
 					}
 				}
 				else
@@ -135,69 +204,7 @@ export class Scenario
 		return paths
 	}
 
-	public breadthFirstSearch(target:number, pos:number) : Array<Level>
-	{
-		this.unVisitAll()
-
-		const visited = new Array<Level>()
-		let current = this.levels[pos]
-	
-		const visit = (level:Level) => {
-			if(!level.visited)
-			{
-				visited.push(level)
-				level.visited = true
-			}
-		}
-	
-		while(true)
-		{
-			if(current.value == target)
-			{
-				visit(current)
-				break
-			}
-			else
-			{
-				visit(current)
-
-				if(current.hasChildren)
-				{
-					if(current.singleChild)
-					{
-						const child = current.children[0]
-						current = !child.visited ? child : current.parent
-					}
-					else
-					{
-						if(current.children.every(c => c.visited))
-						{
-							current = current.parent
-						}
-						else
-						{
-							for(let child of current.children)
-							{	
-								if(!child.visited)
-								{
-									current = child
-									break
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					current = current.parent
-				}
-			}
-		}
-		
-		return visited
-	}
-
-	public defineBigAndSmall(arrA:Array<Level>, arrb:Array<Level>) : PathSize
+	public defineBigAndSmall(arrA:Array<Level>, arrb:Array<Level>) : ArrayCompare
 	{
 		let small:Array<Level>
 		let big:Array<Level>
@@ -213,7 +220,7 @@ export class Scenario
 			small = arrA
 		}
 
-		return new PathSize(big, small)
+		return new ArrayCompare(big, small)
 	}
 
 	public lastCommonLevel(small:Array<Level>, big:Array<Level>) : number
