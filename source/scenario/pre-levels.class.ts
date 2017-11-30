@@ -9,7 +9,7 @@ export class PreLevels
 	{
 		this.levels = new Array<Level>()
 		this.buildList(preLevels)
-		this.buildProps(preLevels)
+		this.buildChildren(preLevels)
 	}
 
 	private buildList(preLevels:Array<PreLevel>) : void
@@ -20,14 +20,11 @@ export class PreLevels
 		}
 	}
 
-	private buildProps(preLevels:Array<PreLevel>) : void
+	private buildChildren(preLevels:Array<PreLevel>) : void
 	{
 		for(let preLevel of preLevels)
 		{
 			const level = this.levels[preLevel.value]
-			const parent = this.levels[preLevel.parent]
-
-			level.addParent(parent)
 			preLevel.children.map(child => level.addChild(this.levels[child]))
 		}
 	}

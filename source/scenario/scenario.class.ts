@@ -12,6 +12,11 @@ export class Scenario
 		this.levels = levels
 	}
 
+	public A_STAR_SEARCH(target:number, current:number) : void
+	{
+		
+	}
+
 	public search(target:number, current:number) : Array<Array<Point>>
 	{
 		const breadthFirstSearch = this.breadthFirstSearch(target, current)

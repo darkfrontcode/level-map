@@ -1,4 +1,5 @@
 import { Path } from "./path.class"
+import { Point } from "./point.class"
 
 export class Level
 {
@@ -9,15 +10,11 @@ export class Level
 	public hasChildren:boolean = false
 	public visited:boolean = false
 	public path:Path
+	public pin:Point
 	
-	constructor(
-		value:number, 
-		parent:Level = null, 
-		children:Array<Level> = new Array<Level>()
-	)
+	constructor(value:number, children:Array<Level> = new Array<Level>())
 	{
 		this.value = value
-		this.parent = parent
 		this.children = children
 	}
 
@@ -61,6 +58,11 @@ export class Level
 	public addPath(path:Path) : void
 	{
 		this.path = path
+	}
+
+	public addPin(pin:Point) : void
+	{
+		this.pin = pin
 	}
 	
 }
