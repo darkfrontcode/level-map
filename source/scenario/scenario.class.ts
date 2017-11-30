@@ -6,6 +6,10 @@ import { Point } from './point.class'
 export class Scenario
 {
 	public levels:Array<Level>
+
+	private stage:Array<Level>
+	private stack:Array<Level>
+	private path:Array<Level> 
 	
 	constructor(levels:Array<Level>)
 	{
@@ -14,7 +18,93 @@ export class Scenario
 
 	public A_STAR_SEARCH(target:number, current:number) : void
 	{
+		// 6 => 4
+
+		this.path.push(this.levels[current])
+		this.stage.push(this.levels[current])
+
+		// [ 6:[2, 7, 8] ] => Array<Level>
+		// [ 2:[1,3,5,6], 7:[6,9,10], 8:[6] ] => Array<Level>
 		
+		for(let level of this.stage)
+		{
+			const search = level.children.find(child => child.value == current)
+			
+			if(search)
+				this.stack = [ ...level.children ] // nop
+			else
+				this.path.push(search) // yep // break
+		}
+
+		// reset
+		this.stage.length = 0
+		this.stage = [ ...this.stack ]
+		this.stack.length = 0
+
+	}
+
+	public saduisahduash(target:number, current:number) : void
+	{
+		// 6 => 4
+
+		const path = new Array<Level>()
+		path.push(this.levels[current]) // 6
+
+		const sixChildren = this.levels[current].children.map(child => child) // [ 2, 7 ,8 ]
+		sixChildren.filter(child => child.value == current)
+		
+		if(sixChildren.length == 0) // check if it is a current match
+		{
+
+			const arr = new Array<Array<Level>>()
+
+			sixChildren.map(child => {
+				
+				// 2, 7, 8
+				this.levels[child.value].children.map(c => {
+
+					const arrB = new Array<Level>()
+
+					// 2 => children
+					c.children.map(e => arrB.push(e))
+
+					arr.push(arrB)
+
+				})
+
+			})
+
+			// 2:[1, 3, 5, 6] 7:[6, 9, 10] 8:[6]
+			arr.map(f => {
+
+				// 2: [1,3,5,6]
+				f.map(d => {
+					
+					const t = d.children.every(h => h.visited)
+
+					if(t)
+					{
+						delete arr[t]
+					}
+
+					const c = d.children.filter(g => g.value == current)
+
+					if(c.length != 0)
+					{
+						path.push(this.levels[c[0].value])
+					}
+
+				})
+			})
+
+
+
+		}
+		else
+		{
+			path.push(this.levels[current])
+		}
+
 	}
 
 	public search(target:number, current:number) : Array<Array<Point>>
