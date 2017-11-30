@@ -1,5 +1,5 @@
 import { Scenario, PreLevel, PreLevels, Path } from './scenario/scenario.namespace'
-import { TimelineLite, Power0 } from 'gsap'
+import { TimelineLite } from 'gsap'
 
 window.onload = () => {
 	
@@ -52,9 +52,11 @@ window.onload = () => {
 			
 			if(current != target)
 			{
-				baseScenario
-					.search(target, current)
-					.forEach(path => tl.to(avatar, .5, { bezier: { values: path, type:"soft" }, ease: Power0.easeNone }))
+				baseScenario.A_STAR_SEARCH(target, current)
+
+				// baseScenario
+				// 	.search(target, current)
+				// 	.forEach(path => tl.to(avatar, .5, { bezier: { values: path, type:"soft" }, ease: Power0.easeNone }))
 
 			}
 
