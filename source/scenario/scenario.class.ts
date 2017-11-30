@@ -6,6 +6,9 @@ import { Point } from './point.class'
 export class Scenario
 {
 	public levels:Array<Level>
+	
+	// TODO: private
+	public found = false
 
 	private stage:Array<Level>
 	private stack:Array<Level>
@@ -25,21 +28,31 @@ export class Scenario
 
 		// [ 6:[2, 7, 8] ] => Array<Level>
 		// [ 2:[1,3,5,6], 7:[6,9,10], 8:[6] ] => Array<Level>
-		
-		for(let level of this.stage)
-		{
-			const search = level.children.find(child => child.value == current)
-			
-			if(search)
-				this.stack = [ ...level.children ] // nop
-			else
-				this.path.push(search) // yep // break
-		}
 
-		// reset
-		this.stage.length = 0
-		this.stage = [ ...this.stack ]
-		this.stack.length = 0
+		while(!this.found)
+		{
+			for(let level of this.stage)
+			{
+				const search = level.children.find(child => child.value == current)
+				
+				if(search)
+				{
+					this.stack = [ ...level.children ] // nop
+				}					
+				else
+				{
+					this.path.push(search) // yep
+					this.found = true
+					break
+				}
+
+			}
+	
+			// reset
+			this.stage.length = 0
+			this.stage = [ ...this.stack ]
+			this.stack.length = 0
+		}
 
 	}
 
