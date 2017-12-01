@@ -7,15 +7,12 @@ window.onload = () => {
 		new PreLevel(0, [1]),
 		new PreLevel(1, [0, 2]),
 		new PreLevel(2, [1, 3, 5, 6]),
-		new PreLevel(3, [2, 4, 7]),
+		new PreLevel(3, [2, 4]),
 		new PreLevel(4, [3]),
 		new PreLevel(5, [2]),
 		new PreLevel(6, [2, 7, 8]),
-		new PreLevel(7, [3, 6]),
-		// new PreLevel(7, [3, 6, 9, 10]),
+		new PreLevel(7, [6]),
 		new PreLevel(8, [6]),
-		// new PreLevel(9, [7]),
-		// new PreLevel(10, [7]),
 	)).levels)
 
 	const lines = document.getElementById("lines").querySelectorAll("line")

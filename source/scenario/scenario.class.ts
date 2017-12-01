@@ -12,13 +12,20 @@ export class Scenario
 
 	public A_STAR_SEARCH(target:number, current:number) : void
 	{
-		const visited = new Array<Level>()
+
+		console.log(
+			'target:' + target, 
+			'current:' + current
+		)
+
+		this.unVisitAll()
+		
+		let visited = new Array<Level>()
 		
 		let stage = new Array<Level>()
 		let stack = new Array<Level>()
 
-		const currentLevel = new Level(this.levels[current].value, this.levels[current].children)
-		stage.push(currentLevel)
+		stage.push(this.levels[current])
 
 		let found = false
 		let loop = 0
@@ -37,27 +44,21 @@ export class Scenario
 				else
 				{
 					level.visited = true
-					stack = new Array<Level>()
-
-					if(level.children.some(child => child.visited == false))
+					visited.push(level)
+					
+					for(let child of level.children)
 					{
-						for(let child of level.children)
+						if(!child.visited)
 						{
-							if(!child.visited)
-							{
-								const clone = new Level(child.value, child.children)
-								clone.addParent(level)
-								stack.push(clone)
-							}
+							child.addParent(level)
+							stack.push(child)
 						}
-
-						visited.push(level)
 					}
 				}
 			}
 
-			// stage = [ ...stack ]
-			stage = [...new Set([...stack])]
+			stage = [...stack]
+			stack = new Array<Level>()
 
 			loop++
 			if(loop == 20) break
@@ -65,11 +66,11 @@ export class Scenario
 
 		console.log(loop)
 		console.log(visited)
-		console.log(this.followParent(visited))
+		// console.log(this.trackParent(visited))
 
 	}
 
-	public followParent(visited:Array<Level>) : Array<Level>
+	public trackParent(visited:Array<Level>) : Array<Level>
 	{
 		const track = new Array<Level>()
 		let current = visited[visited.length -1]
@@ -89,6 +90,15 @@ export class Scenario
 		}
 
 		return track.reverse()
+	}
+
+	private unVisitAll() : void
+	{
+		for(let level of this.levels)
+		{
+			level.visited = false
+			level.parent = null
+		}
 	}
 
 	/*
