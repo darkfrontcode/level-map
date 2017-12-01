@@ -7,18 +7,67 @@ export class Scenario
 {
 	public levels:Array<Level>
 	
-	// TODO: private
-	public found = false
-
-	public stage = new Array<Level>()
-	public stack = new Array<Level>()
-	public path = new Array<Level>()
-	
 	constructor(levels:Array<Level>)
 	{
 		this.levels = levels
 	}
 
+	public A_STAR_SEARCH(target:number, current:number) : void
+	{
+		// 6 => 4
+		const visited = new Array<Level>()
+		let stage = new Array<Level>()
+		let stack = new Array<Level>()
+
+		const currentLevel = new Level(this.levels[current].value, this.levels[current].children)
+		stage.push(currentLevel)
+
+		let found = false
+		let loop = 0
+
+		while(!found)
+		{
+			for(let level of stage)
+			{
+				if(!level.visited)
+				{
+					if(level.value == target)
+					{
+						level.visited = true
+						visited.push(level)
+						found = true
+						break
+					}
+					else
+					{
+						level.visited = true
+						stack = new Array<Level>()
+
+						for(let child of level.children)
+						{
+							const clone = new Level(child.value, child.children)
+							clone.addParent(level)
+							stack.push(clone)
+						}
+
+						// console.log(stack)
+
+						visited.push(level)
+					}
+				}
+			}
+
+			stage = [ ...stack ]
+
+			loop++
+			if(loop == 20) break
+		}
+
+		console.log(loop)
+		console.log(visited)
+	}
+
+	/*
 	public A_STAR_SEARCH(target:number, current:number) : void
 	{
 		// 6 => 4
@@ -71,8 +120,10 @@ export class Scenario
 
 	}
 
+	*/
+
 	/*
-	public saduisahduash(target:number, current:number) : void
+	public A_STAR_SEARCH(target:number, current:number) : void
 	{
 		// 6 => 4
 
