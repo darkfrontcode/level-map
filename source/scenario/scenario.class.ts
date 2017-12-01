@@ -12,23 +12,14 @@ export class Scenario
 
 	public A_STAR_SEARCH(target:number, current:number) : void
 	{
-
-		console.log(
-			'target:' + target, 
-			'current:' + current
-		)
-
 		this.unVisitAll()
 		
 		let visited = new Array<Level>()
-		
 		let stage = new Array<Level>()
 		let stack = new Array<Level>()
+		let found = false
 
 		stage.push(this.levels[current])
-
-		let found = false
-		let loop = 0
 
 		while(!found)
 		{
@@ -57,17 +48,19 @@ export class Scenario
 				}
 			}
 
-			stage = [...stack]
+			stage = [ ...stack ]
 			stack = new Array<Level>()
 
-			loop++
-			if(loop == 20) break
 		}
 
-		console.log(loop)
-		console.log(visited)
-		// console.log(this.trackParent(visited))
+		const path = this.trackParent(visited)
+		this.buildTimelinePath(path)
 
+	}
+
+	public buildTimelinePath(path:Array<Level>) : any
+	{
+		let current, next, prev
 	}
 
 	public trackParent(visited:Array<Level>) : Array<Level>
