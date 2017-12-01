@@ -27,25 +27,28 @@ export class Scenario
 		{
 			for(let level of stage)
 			{
-				if(!level.visited)
+				if(level.value == target)
 				{
-					if(level.value == target)
-					{
-						level.visited = true
-						visited.push(level)
-						found = true
-						break
-					}
-					else
-					{
-						level.visited = true
-						stack = new Array<Level>()
+					level.visited = true
+					visited.push(level)
+					found = true
+					break
+				}
+				else
+				{
+					level.visited = true
+					stack = new Array<Level>()
 
+					if(level.children.some(child => child.visited == false))
+					{
 						for(let child of level.children)
 						{
-							const clone = new Level(child.value, child.children)
-							clone.addParent(level)
-							stack.push(clone)
+							if(!child.visited)
+							{
+								const clone = new Level(child.value, child.children)
+								clone.addParent(level)
+								stack.push(clone)
+							}
 						}
 
 						visited.push(level)
@@ -53,7 +56,8 @@ export class Scenario
 				}
 			}
 
-			stage = [ ...stack ]
+			// stage = [ ...stack ]
+			stage = [...new Set([...stack])]
 
 			loop++
 			if(loop == 20) break
