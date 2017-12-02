@@ -64,22 +64,30 @@ export class Scenario
 		const last = levels.length - 1
 
 		let next:Level
+		let prev:Level
 
 		for(let [key, level] of levels.entries())
 		{
-			console.log(level)
-
-			if(level.value != last && level.value != 0)
+			if(level.value != 0)
 			{
-				next = levels[key + 1]
-
-				if(next.pin.y > level.pin.y)
+				if(key == last)
 				{
-					path.push(level.path.forward)
+					prev = levels[key - 1]
+
+					if(prev.pin.y > level.pin.y)
+						path.push(level.path.backward)
+					else
+						path.push(level.path.forward)
 				}
 				else
 				{
-					path.push(level.path.backward)
+					prev = levels[key - 1]
+					next = levels[key + 1]
+					
+					if(next.pin.y > level.pin.y)
+						path.push(level.path.forward)
+					else
+						path.push(level.path.backward)
 				}
 			}
 		}
