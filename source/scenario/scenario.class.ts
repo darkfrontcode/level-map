@@ -54,8 +54,50 @@ export class Scenario
 
 		}
 
-		return this.buildTimelinePath(this.trackParent(visited))
+		const lineToParent = this.trackParent(visited)
+		const path = this.removeEdges(lineToParent)
 
+		return this.buildTimelinePath(path)
+
+	}
+
+	public removeEdges(levels:Array<Level>) : Array<Level>
+	{
+		console.log(levels)
+
+		let path = new Array<Level>()
+
+		let next:Level
+		let prev:Level
+
+		const last = levels.length - 1
+
+		if(levels.length > 2)
+		{
+			for(let [key, level] of levels.entries())
+			{
+				if(key != 0 && key != last)
+				{
+					next = levels[key + 1]
+					prev = levels[key - 1]
+
+					if(prev.parent != next.parent)
+					{
+						path.push(level)
+					}
+				}
+				else
+				{
+					path.push(level)
+				}
+			}
+		}
+		else
+		{
+			path = levels
+		}
+
+		return path
 	}
 
 	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
@@ -73,21 +115,14 @@ export class Scenario
 				if(key == last)
 				{
 					prev = levels[key - 1]
-
-					if(prev.pin.y > level.pin.y)
-						path.push(level.path.backward)
-					else
-						path.push(level.path.forward)
+					prev.pin.y > level.pin.y ? path.push(level.path.backward) : path.push(level.path.forward)
 				}
 				else
 				{
 					prev = levels[key - 1]
 					next = levels[key + 1]
 					
-					if(next.pin.y > level.pin.y)
-						path.push(level.path.forward)
-					else
-						path.push(level.path.backward)
+					next.pin.y > level.pin.y ? path.push(level.path.forward) : path.push(level.path.backward)
 				}
 			}
 		}

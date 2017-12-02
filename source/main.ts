@@ -51,8 +51,6 @@ window.onload = () => {
 			
 			if(current != target)
 			{
-				console.log(baseScenario.search(target, current))
-
 				const points = baseScenario.search(target, current)
 				for(let point of points)
 				{
