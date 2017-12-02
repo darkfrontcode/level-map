@@ -1,5 +1,5 @@
-import { Scenario, PreLevel, PreLevels, Path } from './scenario/scenario.namespace'
-import { TimelineLite } from 'gsap'
+import { Scenario, PreLevel, PreLevels } from './scenario/scenario.namespace'
+import { TimelineLite, Power0 } from 'gsap'
 
 window.onload = () => {
 	
@@ -23,26 +23,27 @@ window.onload = () => {
 	let target = 0
 	let current = 0
 
-	lines.forEach((line, key) => {
-		const forward = window["MorphSVGPlugin"].pathDataToBezier(line, { align: avatar })
-		const backward = [ ...forward ].reverse()
-		baseScenario.levels[key].addPath(new Path(forward, backward))
-	})
+	for(let [key, line] of lines.entries())
+	{
+		const level = baseScenario.levels[key]
+		level.createPath(window["MorphSVGPlugin"].pathDataToBezier(line, { align: avatar }))
+		level.createPin()
+	}
 
-	pins.forEach((pin, key) => {
+	for(let [key, pin] of pins.entries())
+	{
+		const level = baseScenario.levels[key]
 
 		tl.set(pins[key], {
-
-			// TODO: refactory this
-			x: baseScenario.levels[key].path.forward[baseScenario.levels[key].path.forward.length - 1].x,
-			y: baseScenario.levels[key].path.forward[baseScenario.levels[key].path.forward.length - 1].y,
+			x: level.pin.x,
+			y: level.pin.y,
 			xPercent: -50,
 			yPercent: -50
-
 		})
-		
-		pins[key].onclick = (event:any) => {
 
+		// TODO: type this
+		pin.onclick = (event:any) => {
+			
 			current = target
 			target = +event.target.getAttribute("data-id")
 
@@ -50,21 +51,21 @@ window.onload = () => {
 			
 			if(current != target)
 			{
-				baseScenario.A_STAR_SEARCH(target, current)
-
-				// baseScenario
-				// 	.search(target, current)
-				// 	.forEach(path => tl.to(avatar, .5, { bezier: { values: path, type:"soft" }, ease: Power0.easeNone }))
+				baseScenario
+					.search(target, current)
+					.forEach(path => tl.to(avatar, .5, { bezier: { values: path, type:"soft" }, ease: Power0.easeNone }))
 
 			}
 
 		}
 
-	})
+	}
+
+	const pin = baseScenario.levels[0].pin
 
 	tl.set(avatar, {
-		x: 400,
-		y: 0,
+		x: pin.x,
+		y: pin.y,
 		xPercent: -50,
 		yPercent: -50
 	})

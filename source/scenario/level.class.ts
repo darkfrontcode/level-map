@@ -55,9 +55,20 @@ export class Level
 		return [ ...children ]
 	}
 
+	public createPath(forward:Array<Point>) : void
+	{
+		const backward = [ ...forward ].reverse()
+		this.addPath(new Path(forward, backward))
+	}
+
 	public addPath(path:Path) : void
 	{
 		this.path = path
+	}
+
+	public createPin() : void
+	{
+		this.addPin(this.path.backward[0])
 	}
 
 	public addPin(pin:Point) : void
