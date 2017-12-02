@@ -67,11 +67,9 @@ export class Scenario
 
 		for(let [key, level] of levels.entries())
 		{
-			if(level.value == 0)
-			{
-				path.push(level.path.forward)
-			}
-			else if(!last)
+			console.log(level)
+
+			if(level.value != last && level.value != 0)
 			{
 				next = levels[key + 1]
 

@@ -51,9 +51,13 @@ window.onload = () => {
 			
 			if(current != target)
 			{
-				baseScenario
-					.search(target, current)
-					.forEach(path => tl.to(avatar, .5, { bezier: { values: path, type:"soft" }, ease: Power0.easeNone }))
+				console.log(baseScenario.search(target, current))
+
+				const points = baseScenario.search(target, current)
+				for(let point of points)
+				{
+					tl.to(avatar, .5, { bezier: { values: point, type:"soft" }, ease: Power0.easeNone })
+				}
 
 			}
 
