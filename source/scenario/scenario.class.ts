@@ -1,6 +1,5 @@
 import { Level } from './level.class'
 import { Point } from './point.class'
-import { Points } from './points.interface'
 
 // TODO:change name to LevelMap
 export class Scenario
@@ -12,7 +11,7 @@ export class Scenario
 		this.levels = levels
 	}
 
-	public search(target:number, current:number) : Array<Points>
+	public search(target:number, current:number) : Array<Array<Point>>
 	{
 		this.unVisitAll()
 		
@@ -59,20 +58,32 @@ export class Scenario
 
 	}
 
-	public buildTimelinePath(levels:Array<Level>) : Array<Points>
+	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
 	{
-		const path = new Array<Points>()
-		const size = levels.length - 1
+		const path = new Array<Array<Point>>()
+		const last = levels.length - 1
 
 		let next:Level
 
 		for(let [key, level] of levels.entries())
 		{
+			if(level.value == 0)
+			{
+				path.push(level.path.forward)
+			}
+			else if(!last)
+			{
+				next = levels[key + 1]
 
-			// first
-			// last
-			// between
-			// next = levels[key + 1]
+				if(next.pin.y > level.pin.y)
+				{
+					path.push(level.path.forward)
+				}
+				else
+				{
+					path.push(level.path.backward)
+				}
+			}
 		}
 
 		return path
