@@ -87,35 +87,35 @@ export class Scenario
 	// 	return path
 	// }
 
-	public removeMultipleEdges(levels:Array<Level>) : Array<Array<Point>>
-	{
-		let path = new Array<Level>()
+	// public removeMultipleEdges(levels:Array<Level>) : Array<Array<Point>>
+	// {
+	// 	let path = new Array<Level>()
 
-		let next:Level
-		let prev:Level
+	// 	let next:Level
+	// 	let prev:Level
 
-		const last = levels.length - 1
+	// 	const last = levels.length - 1
 
-		for(let [key, level] of levels.entries())
-		{
-			if(key != 0 && key != last)
-			{
-				next = levels[key + 1]
-				prev = levels[key - 1]
+	// 	for(let [key, level] of levels.entries())
+	// 	{
+	// 		if(key != 0 && key != last)
+	// 		{
+	// 			next = levels[key + 1]
+	// 			prev = levels[key - 1]
 
-				if(prev.parent != next.parent)
-				{
-					path.push(level)
-				}
-			}
-			else
-			{
-				path.push(level)
-			}
-		}
+	// 			if(prev.parent != next.parent)
+	// 			{
+	// 				path.push(level)
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			path.push(level)
+	// 		}
+	// 	}
 
-		return this.buildTimelinePath(path)
-	}
+	// 	return this.buildTimelinePath(path)
+	// }
 
 	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
 	{
@@ -139,7 +139,6 @@ export class Scenario
 		}
 		else
 		{
-			// TODO: remove logic from here.
 			for(let [key, level] of levels.entries())
 			{
 				if(level.value != 0)
@@ -153,8 +152,18 @@ export class Scenario
 					{
 						prev = levels[key - 1]
 						next = levels[key + 1]
-						
-						next.pin.y > level.pin.y ? path.push(level.path.forward) : path.push(level.path.backward)
+
+						if(next && prev)
+						{
+							if(next.pin.y != prev.pin.y)
+							{
+								next.pin.y > level.pin.y ? path.push(level.path.forward) : path.push(level.path.backward)
+							}
+						}
+						else
+						{
+							next.pin.y > level.pin.y ? path.push(level.path.forward) : path.push(level.path.backward)
+						}
 					}
 				}
 			}
