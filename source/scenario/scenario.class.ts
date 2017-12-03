@@ -59,64 +59,6 @@ export class Scenario
 		
 	}
 
-	// public dispatcher(levels:Array<Level>) : Array<Array<Point>>
-	// {
-	// 	return levels.length == 2 ? this.removeSingleEdge(levels) : this.removeMultipleEdges(levels)
-	// }
-
-	// public removeSingleEdge(levels:Array<Level>) : Array<Array<Point>>
-	// {
-	// 	let path = new Array<Array<Point>>()
-
-	// 	let current = levels[0]
-	// 	let next = levels[1]
-	// 	// let prev:Level
-
-	// 	next = levels[1]
-	// 	const found = next.children.find(child => child.value == levels[0].value)
-
-	// 	if(found)
-	// 	{
-	// 		next.pin.y > current.pin.y ? path.push(current.path.forward) : path.push(current.path.backward)
-	// 	}
-	// 	else
-	// 	{
-	// 		path = this.buildTimelinePath(levels)
-	// 	}
-
-	// 	return path
-	// }
-
-	// public removeMultipleEdges(levels:Array<Level>) : Array<Array<Point>>
-	// {
-	// 	let path = new Array<Level>()
-
-	// 	let next:Level
-	// 	let prev:Level
-
-	// 	const last = levels.length - 1
-
-	// 	for(let [key, level] of levels.entries())
-	// 	{
-	// 		if(key != 0 && key != last)
-	// 		{
-	// 			next = levels[key + 1]
-	// 			prev = levels[key - 1]
-
-	// 			if(prev.parent != next.parent)
-	// 			{
-	// 				path.push(level)
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			path.push(level)
-	// 		}
-	// 	}
-
-	// 	return this.buildTimelinePath(path)
-	// }
-
 	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
 	{
 		const path = new Array<Array<Point>>()
