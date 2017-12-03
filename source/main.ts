@@ -1,9 +1,11 @@
-import { Scenario, PreLevel, PreLevels } from './scenario/scenario.namespace'
-import { TimelineLite, Power0 } from 'gsap'
+import { World, PreLevel } from './scenario/scenario.namespace'
 
 window.onload = () => {
 	
-	const baseScenario = new Scenario(new PreLevels(new Array<PreLevel>(
+	const lines = document.getElementById("lines").querySelectorAll("line")
+	const pins = document.getElementById("pins").querySelectorAll("circle")
+	const avatar = document.getElementById("avatar")
+	const preLevelList = new Array<PreLevel>(
 		new PreLevel(0, [1]),
 		new PreLevel(1, [0, 2]),
 		new PreLevel(2, [1, 3, 5, 6]),
@@ -13,63 +15,8 @@ window.onload = () => {
 		new PreLevel(6, [2, 7, 8]),
 		new PreLevel(7, [6]),
 		new PreLevel(8, [6]),
-	)).levels)
+	)
 
-	const lines = document.getElementById("lines").querySelectorAll("line")
-	const pins = document.getElementById("pins").querySelectorAll("circle")
-	const avatar = document.getElementById("avatar")
-	const tl = new TimelineLite()
-
-	let target = 0
-	let current = 0
-
-	for(let [key, line] of lines.entries())
-	{
-		const level = baseScenario.levels[key]
-		level.createPath(window["MorphSVGPlugin"].pathDataToBezier(line, { align: avatar }))
-		level.createPin()
-	}
-
-	for(let [key, pin] of pins.entries())
-	{
-		const level = baseScenario.levels[key]
-
-		tl.set(pins[key], {
-			x: level.pin.x,
-			y: level.pin.y,
-			xPercent: -50,
-			yPercent: -50
-		})
-
-		// TODO: type this
-		pin.onclick = (event:any) => {
-			
-			current = target
-			target = +event.target.getAttribute("data-id")
-
-			tl.kill()
-			
-			if(current != target)
-			{
-				const points = baseScenario.search(target, current)
-				for(let point of points)
-				{
-					tl.to(avatar, .5, { bezier: { values: point, type:"soft" }, ease: Power0.easeNone })
-				}
-
-			}
-
-		}
-
-	}
-
-	const pin = baseScenario.levels[0].pin
-
-	tl.set(avatar, {
-		x: pin.x,
-		y: pin.y,
-		xPercent: -50,
-		yPercent: -50
-	})
+	new World(preLevelList, lines, pins, avatar)
 
 }
