@@ -1,148 +1,102 @@
-import { Level } from './level.class'
-import { Point } from './point.class'
+import { Track } from './track.class'
+import { PreLevel } from './pre-level.class'
+import { PreLevels } from './pre-levels.class'
+import { TimelineMax, Power0 } from 'gsap'
 
-// TODO:change name to LevelMap
 export class Scenario
 {
-	public levels:Array<Level>
+	public track:Track
+	public target:number
+	public current:number
+	public lines:NodeListOf<SVGLineElement>
+	public pins:NodeListOf<SVGCircleElement>
+	public avatar:HTMLElement
+	public loader:Element
+	public tl:TimelineMax
+
+	constructor(preLevelList:Array<PreLevel>, lines:NodeListOf<SVGLineElement>, pins:NodeListOf<SVGCircleElement>, avatar:HTMLElement, loader:Element)
+	{
+		this.track = new Track(new PreLevels(preLevelList).levels)
+		this.target = 0
+		this.current = 0
+		this.lines = lines
+		this.pins = pins
+		this.avatar = avatar
+		this.loader = loader
+		this.tl = new TimelineMax()
+		this.load()
+	}
+
+	private load() : void 
+	{
+		this.createPath()
+		this.createPinsAndListeners()
+		this.createAvatar()
+		this.removeLoader()
+	}
+
+	private createPath() : void
+	{
+		for(let [key, line] of this.lines.entries())
+		{
+			const level = this.track.levels[key]
+			level.createPath(window["MorphSVGPlugin"].pathDataToBezier(line, { align: this.avatar }))
+			level.createPin()
+		}
+	}
+
+	private createPinsAndListeners() : void
+	{
+		for(let [key, pin] of this.pins.entries())
+		{
+			const level = this.track.levels[key]
 	
-	constructor(levels:Array<Level>)
-	{
-		this.levels = levels
+			this.tl.set(this.pins[key], {
+				x: level.pin.x,
+				y: level.pin.y,
+				xPercent: -50,
+				yPercent: -50
+			})
+	
+			// TODO: type this
+			pin.onclick = (event:any) => {
+				
+				this.current = this.target
+				this.target = +event.target.getAttribute("data-id")
+	
+				this.tl.kill()
+				
+				if(this.current != this.target)
+				{
+					const points = this.track.search(this.target, this.current)
+					for(let point of points)
+					{
+						this.tl.to(this.avatar, .5, { bezier: { values: point, type:"soft" }, ease: Power0.easeNone })
+					}
+	
+				}
+	
+			}
+	
+		}
 	}
 
-	public search(target:number, current:number) : Array<Array<Point>>
+	private createAvatar() : void
 	{
-		this.unVisitAll()
+		const pin = this.track.levels[0].pin
 		
-		let visited = new Array<Level>()
-		let stage = new Array<Level>()
-		let stack = new Array<Level>()
-		let found = false
-
-		stage.push(this.levels[current])
-
-		while(!found)
-		{
-			for(let level of stage)
-			{
-				if(level.value == target)
-				{
-					level.visited = true
-					visited.push(level)
-					found = true
-					break
-				}
-				else
-				{
-					level.visited = true
-					visited.push(level)
-					
-					for(let child of level.children)
-					{
-						if(!child.visited)
-						{
-							child.addParent(level)
-							stack.push(child)
-						}
-					}
-				}
-			}
-
-			stage = [ ...stack ]
-			stack = new Array<Level>()
-
-		}
-
-		const path = this.trackParent(visited)
-		return this.buildTimelinePath(path)
-		
+		this.tl.set(this.avatar, {
+			x: pin.x,
+			y: pin.y,
+			xPercent: -50,
+			yPercent: -50
+		})
 	}
 
-	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
+	private removeLoader() : void
 	{
-		const path = new Array<Array<Point>>()
-		const last = levels.length - 1
-
-		let next:Level
-		let prev:Level
-		let current:Level
-
-		if(levels.length == 2)
-		{
-			current = levels[0]
-			next = levels[1]
-
-			if(current.pin.y > next.pin.y)
-				current.pin.y > next.pin.y ? path.push(current.path.backward) : path.push(current.path.forward)
-			else
-				current.pin.y > next.pin.y ? path.push(next.path.backward) : path.push(next.path.forward)
-			
-		}
-		else
-		{
-			for(let [key, level] of levels.entries())
-			{
-				if(level.value != 0)
-				{
-					if(key == last)
-					{
-						prev = levels[key - 1]
-						prev.pin.y > level.pin.y ? path.push(level.path.backward) : path.push(level.path.forward)
-					}
-					else
-					{
-						prev = levels[key - 1]
-						next = levels[key + 1]
-
-						if(next && prev)
-						{
-							if(next.pin.y != prev.pin.y)
-							{
-								next.pin.y > level.pin.y ? path.push(level.path.forward) : path.push(level.path.backward)
-							}
-						}
-						else
-						{
-							next.pin.y > level.pin.y ? path.push(level.path.forward) : path.push(level.path.backward)
-						}
-					}
-				}
-			}
-		}
-
-		return path
+		setTimeout(() => {
+			this.loader.remove()
+		}, 500)
 	}
-
-	public trackParent(visited:Array<Level>) : Array<Level>
-	{
-		const track = new Array<Level>()
-		let current = visited[visited.length -1]
-
-		while(true)
-		{
-			if(current.parent == null)
-			{
-				track.push(current)
-				break
-			}
-			else
-			{
-				track.push(current)
-				current = current.parent
-			}
-		}
-
-		return track.reverse()
-	}
-
-	private unVisitAll() : void
-	{
-		for(let level of this.levels)
-		{
-			level.visited = false
-			level.parent = null
-		}
-	}
-
 }

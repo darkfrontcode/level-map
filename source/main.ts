@@ -1,4 +1,4 @@
-import { World, PreLevel } from './scenario/scenario.namespace'
+import { Scenario, PreLevel } from './scenario/scenario.namespace'
 
 window.onload = () => {
 	
@@ -18,6 +18,6 @@ window.onload = () => {
 		new PreLevel(8, [6]),
 	)
 
-	new World(preLevelList, lines, pins, avatar, loader)
+	new Scenario(preLevelList, lines, pins, avatar, loader)
 
 }
