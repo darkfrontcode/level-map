@@ -2,9 +2,10 @@ import { World, PreLevel } from './scenario/scenario.namespace'
 
 window.onload = () => {
 	
-	const lines = document.getElementById("lines").querySelectorAll("line")
-	const pins = document.getElementById("pins").querySelectorAll("circle")
-	const avatar = document.getElementById("avatar")
+	const loader = document.getElementsByClassName('loader')[0]
+	const lines = document.getElementById('lines').querySelectorAll('line')
+	const pins = document.getElementById('pins').querySelectorAll('circle')
+	const avatar = document.getElementById('avatar')
 	const preLevelList = new Array<PreLevel>(
 		new PreLevel(0, [1]),
 		new PreLevel(1, [0, 2]),
@@ -17,6 +18,6 @@ window.onload = () => {
 		new PreLevel(8, [6]),
 	)
 
-	new World(preLevelList, lines, pins, avatar)
+	new World(preLevelList, lines, pins, avatar, loader)
 
 }

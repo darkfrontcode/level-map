@@ -11,9 +11,10 @@ export class World
 	public lines:NodeListOf<SVGLineElement>
 	public pins:NodeListOf<SVGCircleElement>
 	public avatar:HTMLElement
+	public loader:Element
 	public tl:TimelineMax
 
-	constructor(preLevelList:Array<PreLevel>, lines:NodeListOf<SVGLineElement>, pins:NodeListOf<SVGCircleElement>, avatar:HTMLElement)
+	constructor(preLevelList:Array<PreLevel>, lines:NodeListOf<SVGLineElement>, pins:NodeListOf<SVGCircleElement>, avatar:HTMLElement, loader:Element)
 	{
 		this.scenario = new Scenario(new PreLevels(preLevelList).levels)
 		this.target = 0
@@ -21,19 +22,20 @@ export class World
 		this.lines = lines
 		this.pins = pins
 		this.avatar = avatar
+		this.loader = loader
 		this.tl = new TimelineMax()
 		this.load()
 	}
 
-	public load() : void 
+	private load() : void 
 	{
 		this.createPath()
 		this.createPinsAndListeners()
 		this.createAvatar()
-		// TODO: remove loader
+		this.removeLoader()
 	}
 
-	public createPath() : void
+	private createPath() : void
 	{
 		for(let [key, line] of this.lines.entries())
 		{
@@ -43,7 +45,7 @@ export class World
 		}
 	}
 
-	public createPinsAndListeners() : void
+	private createPinsAndListeners() : void
 	{
 		for(let [key, pin] of this.pins.entries())
 		{
@@ -79,7 +81,7 @@ export class World
 		}
 	}
 
-	public createAvatar() : void
+	private createAvatar() : void
 	{
 		const pin = this.scenario.levels[0].pin
 		
@@ -89,5 +91,12 @@ export class World
 			xPercent: -50,
 			yPercent: -50
 		})
+	}
+
+	private removeLoader() : void
+	{
+		setTimeout(() => {
+			this.loader.remove()
+		}, 500)
 	}
 }
