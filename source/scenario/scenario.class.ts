@@ -55,16 +55,40 @@ export class Scenario
 		}
 
 		const lineToParent = this.trackParent(visited)
-		const path = this.removeEdges(lineToParent)
-
-		return this.buildTimelinePath(path)
-
+		return this.dispatcher(lineToParent)
+		
 	}
 
-	public removeEdges(levels:Array<Level>) : Array<Level>
+	public dispatcher(levels:Array<Level>) : Array<Array<Point>>
 	{
-		console.log(levels)
+		return levels.length == 2 ? this.removeSingleEdge(levels) : this.removeMultipleEdges(levels)
+	}
 
+	public removeSingleEdge(levels:Array<Level>) : Array<Array<Point>>
+	{
+		let path = new Array<Array<Point>>()
+
+		let current = levels[0]
+		let next = levels[1]
+		// let prev:Level
+
+		next = levels[1]
+		const found = next.children.find(child => child.value == levels[0].value)
+
+		if(found)
+		{
+			next.pin.y > current.pin.y ? path.push(current.path.forward) : path.push(current.path.backward)
+		}
+		else
+		{
+			path = this.buildTimelinePath(levels)
+		}
+
+		return path
+	}
+
+	public removeMultipleEdges(levels:Array<Level>) : Array<Array<Point>>
+	{
 		let path = new Array<Level>()
 
 		let next:Level
@@ -72,32 +96,25 @@ export class Scenario
 
 		const last = levels.length - 1
 
-		if(levels.length > 2)
+		for(let [key, level] of levels.entries())
 		{
-			for(let [key, level] of levels.entries())
+			if(key != 0 && key != last)
 			{
-				if(key != 0 && key != last)
-				{
-					next = levels[key + 1]
-					prev = levels[key - 1]
+				next = levels[key + 1]
+				prev = levels[key - 1]
 
-					if(prev.parent != next.parent)
-					{
-						path.push(level)
-					}
-				}
-				else
+				if(prev.parent != next.parent)
 				{
 					path.push(level)
 				}
 			}
-		}
-		else
-		{
-			path = levels
+			else
+			{
+				path.push(level)
+			}
 		}
 
-		return path
+		return this.buildTimelinePath(path)
 	}
 
 	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
@@ -108,6 +125,7 @@ export class Scenario
 		let next:Level
 		let prev:Level
 
+		// TODO: remove logic from here.
 		for(let [key, level] of levels.entries())
 		{
 			if(level.value != 0)
