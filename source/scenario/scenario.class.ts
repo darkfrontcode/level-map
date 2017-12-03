@@ -54,38 +54,38 @@ export class Scenario
 
 		}
 
-		const lineToParent = this.trackParent(visited)
-		return this.dispatcher(lineToParent)
+		const path = this.trackParent(visited)
+		return this.buildTimelinePath(path)
 		
 	}
 
-	public dispatcher(levels:Array<Level>) : Array<Array<Point>>
-	{
-		return levels.length == 2 ? this.removeSingleEdge(levels) : this.removeMultipleEdges(levels)
-	}
+	// public dispatcher(levels:Array<Level>) : Array<Array<Point>>
+	// {
+	// 	return levels.length == 2 ? this.removeSingleEdge(levels) : this.removeMultipleEdges(levels)
+	// }
 
-	public removeSingleEdge(levels:Array<Level>) : Array<Array<Point>>
-	{
-		let path = new Array<Array<Point>>()
+	// public removeSingleEdge(levels:Array<Level>) : Array<Array<Point>>
+	// {
+	// 	let path = new Array<Array<Point>>()
 
-		let current = levels[0]
-		let next = levels[1]
-		// let prev:Level
+	// 	let current = levels[0]
+	// 	let next = levels[1]
+	// 	// let prev:Level
 
-		next = levels[1]
-		const found = next.children.find(child => child.value == levels[0].value)
+	// 	next = levels[1]
+	// 	const found = next.children.find(child => child.value == levels[0].value)
 
-		if(found)
-		{
-			next.pin.y > current.pin.y ? path.push(current.path.forward) : path.push(current.path.backward)
-		}
-		else
-		{
-			path = this.buildTimelinePath(levels)
-		}
+	// 	if(found)
+	// 	{
+	// 		next.pin.y > current.pin.y ? path.push(current.path.forward) : path.push(current.path.backward)
+	// 	}
+	// 	else
+	// 	{
+	// 		path = this.buildTimelinePath(levels)
+	// 	}
 
-		return path
-	}
+	// 	return path
+	// }
 
 	public removeMultipleEdges(levels:Array<Level>) : Array<Array<Point>>
 	{
@@ -124,23 +124,38 @@ export class Scenario
 
 		let next:Level
 		let prev:Level
+		let current:Level
 
-		// TODO: remove logic from here.
-		for(let [key, level] of levels.entries())
+		if(levels.length == 2)
 		{
-			if(level.value != 0)
+			current = levels[0]
+			next = levels[1]
+
+			if(current.pin.y > next.pin.y)
+				current.pin.y > next.pin.y ? path.push(current.path.backward) : path.push(current.path.forward)
+			else
+				current.pin.y > next.pin.y ? path.push(next.path.backward) : path.push(next.path.forward)
+			
+		}
+		else
+		{
+			// TODO: remove logic from here.
+			for(let [key, level] of levels.entries())
 			{
-				if(key == last)
+				if(level.value != 0)
 				{
-					prev = levels[key - 1]
-					prev.pin.y > level.pin.y ? path.push(level.path.backward) : path.push(level.path.forward)
-				}
-				else
-				{
-					prev = levels[key - 1]
-					next = levels[key + 1]
-					
-					next.pin.y > level.pin.y ? path.push(level.path.forward) : path.push(level.path.backward)
+					if(key == last)
+					{
+						prev = levels[key - 1]
+						prev.pin.y > level.pin.y ? path.push(level.path.backward) : path.push(level.path.forward)
+					}
+					else
+					{
+						prev = levels[key - 1]
+						next = levels[key + 1]
+						
+						next.pin.y > level.pin.y ? path.push(level.path.forward) : path.push(level.path.backward)
+					}
 				}
 			}
 		}
