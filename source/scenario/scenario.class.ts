@@ -14,8 +14,6 @@ export class Scenario
 	public loader:Element
 	public tl:TimelineMax
 
-	private onMove:boolean
-
 	constructor(preLevelList:Array<PreLevel>, lines:NodeListOf<SVGLineElement>, pins:NodeListOf<SVGCircleElement>, avatar:HTMLElement, loader:Element)
 	{
 		this.track = new Track(new PreLevels(preLevelList).levels)
@@ -27,6 +25,8 @@ export class Scenario
 		this.loader = loader
 		this.tl = new TimelineMax()
 		this.load()
+
+		this.onUpdate = this.onUpdate.bind(this)
 	}
 
 	private load() : void 
@@ -63,43 +63,39 @@ export class Scenario
 			// TODO: type this
 			pin.onclick = (event:any) => {
 
-				if(this.onMove)
+				if(!this.tl.isActive())
 				{
-					// this.tl.pause()
-					// console.log(event.target._gsTransform)
-					// const pos = event.target._gsTransform
-					// this.tl.clear()
-					// this.tl = new TimelineMax()
-					// this.tl.to(this.avatar, .5, { bezier: { values: [{x:pos.x, y:pos.y}, {x:400, y:0}], type:"soft" }})
-					// this.tl.reverse()
-
-					this.tl.pause()
-					console.log(event.target._gsTransform)
-					this.onMove = false
-				}
-				else
-				{
-					this.onMove = true
-
 					this.current = this.target
 					this.target = +event.target.getAttribute("data-id")
-	
-					this.tl = new TimelineMax()
-					
+
+					this.tl = new TimelineMax({ onUpdate: this.onUpdate })
+
 					if(this.current != this.target)
 					{
 						const points = this.track.search(this.target, this.current)
 						for(let point of points)
 						{
-							this.tl.to(this.avatar, 1, { bezier: { values: point, type:"soft" }, ease: Power0.easeNone })
+							this.tl.to(this.avatar, .5, { bezier: { values: point, type:"soft" }, ease: Power0.easeNone })
 						}
-		
 					}
+				}
+				else
+				{
+					this.tl.pause()
 				}
 	
 			}
 	
 		}
+	}
+
+	private onUpdate(avatar:HTMLElement)
+	{
+		console.log(
+			this.avatar['_gsTransform'].x,
+			this.avatar['_gsTransform'].y
+		)
+		// console.log(event.target._gsTransform)
 	}
 
 	private createAvatar() : void
