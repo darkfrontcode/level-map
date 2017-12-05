@@ -28,6 +28,7 @@ export class Scenario
 		this.stop = false
 		this.load()
 
+		// adjust bindings
 		this.onComplete = this.onComplete.bind(this)
 	}
 
@@ -49,7 +50,7 @@ export class Scenario
 		}
 	}
 
-	// TODO: separate these two features
+	// TODO: separate these two features and make better names
 	private createPinsAndListeners() : void
 	{
 		for(let [key, pin] of this.pins.entries())
@@ -66,19 +67,18 @@ export class Scenario
 			// TODO: type this
 			pin.onclick = (event:any) => {
 
-				this.levelTarget(+event.target.getAttribute("data-id"))
+				this.setTarget(+event.target.getAttribute("data-id"))
 				
 				if(this.timeline.isActive())
 					this.stop = true
 				else
 					this.timeline = this.buildTimelineTrack(this.target, this.current)
-
-				this.timeline.play()
 			}
 		}
 	}
 
-	private levelTarget(level:number) : void
+	// TODO: put this on set
+	private setTarget(level:number) : void
 	{
 		this.current = this.target
 		this.target = level
@@ -86,7 +86,7 @@ export class Scenario
 
 	private buildTimelineTrack(target:number, current:number) : TimelineMax
 	{
-		const timeline = new TimelineMax({ paused: true })
+		const timeline = new TimelineMax()
 		const { points, path } = this.track.search(target, current)
 
 		for(let [key, point] of points.entries())
@@ -116,11 +116,11 @@ export class Scenario
 			this.current = level
 			this.timeline = this.buildTimelineTrack(this.target, this.current)
 
-			this.timeline.play()
 			this.stop = false
 		}
 	}
 
+	// TODO: think in a better name
 	private createAvatar() : void
 	{
 		const pin = this.track.levels[0].pin
