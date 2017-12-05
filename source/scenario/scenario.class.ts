@@ -5,14 +5,15 @@ import { TimelineMax, Power0 } from 'gsap'
 
 export class Scenario
 {
-	public track:Track
-	public target:number
-	public current:number
-	public lines:NodeListOf<SVGLineElement>
-	public pins:NodeListOf<SVGCircleElement>
-	public avatar:HTMLElement
-	public loader:Element
-	public tl:TimelineMax
+	private track:Track
+	private target:number
+	private current:number
+	private lines:NodeListOf<SVGLineElement>
+	private pins:NodeListOf<SVGCircleElement>
+	private avatar:HTMLElement
+	private loader:Element
+	private tl:TimelineMax
+	private tlStack:TimelineMax
 
 	constructor(preLevelList:Array<PreLevel>, lines:NodeListOf<SVGLineElement>, pins:NodeListOf<SVGCircleElement>, avatar:HTMLElement, loader:Element)
 	{
@@ -70,6 +71,7 @@ export class Scenario
 
 					this.tl = new TimelineMax()
 
+					// TODO: maybe remove this
 					if(this.current != this.target)
 					{
 						const points = this.track.search(this.target, this.current)
@@ -89,9 +91,12 @@ export class Scenario
 				}
 				else
 				{
-					// this.current = this.target
-					// this.target = +event.target.getAttribute("data-id")
 					this.tl.pause()
+
+					this.current = this.target
+					this.target = +event.target.getAttribute("data-id")
+
+					this.pathToTimeline(this.tlStack)
 				}
 	
 			}
@@ -105,6 +110,25 @@ export class Scenario
 			`x: ${ this.avatar['_gsTransform'].x }`,
 			`y: ${ this.avatar['_gsTransform'].y }`
 		)
+	}
+
+	private pathToTimeline(tl:TimelineMax) : void
+	{
+		tl = new TimelineMax({ paused: true })
+		
+		this.track
+			.search(this.target, this.current)
+			.map(point => {
+				tl.to(
+					this.avatar, 
+					.5, 
+					{ 
+						bezier: { values: point, type:"soft" }, 
+						ease: Power0.easeNone,
+						onComplete: this.onComplete
+					}
+				)
+			})
 	}
 
 	private createAvatar() : void
