@@ -13,7 +13,7 @@ export class Scenario
 	private avatar:HTMLElement
 	private loader:Element
 	private timeline:TimelineMax
-	private timelineStack:TimelineMax
+	private stop:boolean
 
 	constructor(preLevelList:Array<PreLevel>, lines:NodeListOf<SVGLineElement>, pins:NodeListOf<SVGCircleElement>, avatar:HTMLElement, loader:Element)
 	{
@@ -25,6 +25,7 @@ export class Scenario
 		this.avatar = avatar
 		this.loader = loader
 		this.timeline = new TimelineMax()
+		this.stop = false
 		this.load()
 
 		this.onComplete = this.onComplete.bind(this)
@@ -68,13 +69,9 @@ export class Scenario
 				this.levelTarget(+event.target.getAttribute("data-id"))
 				
 				if(this.timeline.isActive())
-				{
-					this.timelineStack = this.buildTimelineTrack(this.target, this.current)
-				}
+					this.stop = true
 				else
-				{
 					this.timeline = this.buildTimelineTrack(this.target, this.current)
-				}
 
 				this.timeline.play()
 			}
@@ -90,17 +87,18 @@ export class Scenario
 	private buildTimelineTrack(target:number, current:number) : TimelineMax
 	{
 		const timeline = new TimelineMax({ paused: true })
-		const points = this.track.search(target, current)
+		const { points, path } = this.track.search(target, current)
 
-		for(let point of points)
+		for(let [key, point] of points.entries())
 		{
 			timeline.to(
-				this.avatar, 
+				this.avatar,
 				1, 
 				{ 
 					bezier: { values: point, type:"soft" }, 
 					ease: Power0.easeNone,
-					onComplete: this.onComplete
+					onComplete: this.onComplete,
+					onCompleteParams: [ path[key].value ]
 				}
 			)
 		}
@@ -108,23 +106,19 @@ export class Scenario
 		return timeline
 	}
 
-	private onComplete() : void
+	private onComplete(level:number) : void
 	{
-		console.log(this.timelineStack)
-
-		if(this.timelineStack)
+		if(this.stop)
 		{
 			this.timeline.pause()
 			this.timeline.kill()
-			this.timeline = this.timelineStack
+
+			this.current = level
+			this.timeline = this.buildTimelineTrack(this.target, this.current)
+
 			this.timeline.play()
-			this.timelineStack = undefined
+			this.stop = false
 		}
-		
-		// console.log(
-		// 	`x: ${ this.avatar['_gsTransform'].x }`,
-		// 	`y: ${ this.avatar['_gsTransform'].y }`
-		// )
 	}
 
 	private createAvatar() : void
@@ -141,8 +135,6 @@ export class Scenario
 
 	private removeLoader() : void
 	{
-		setTimeout(() => {
-			this.loader.remove()
-		}, 500)
+		setTimeout(() => this.loader.remove(), 500)
 	}
 }

@@ -1,5 +1,6 @@
 import { Level } from './level.class'
 import { Point } from './point.class'
+import { Tracker } from './tracker.class'
 
 export class Track
 {
@@ -10,7 +11,7 @@ export class Track
 		this.levels = levels
 	}
 
-	public search(target:number, current:number) : Array<Array<Point>>
+	public search(target:number, current:number) : Tracker
 	{
 		this.unVisitAll()
 		
@@ -52,7 +53,10 @@ export class Track
 		}
 
 		const path = this.trackParent(visited)
-		return this.buildTimelinePath(path)
+		const points = this.buildTimelinePath(path)
+
+		// TODO: refactory this
+		return new Tracker(points, path.filter((p, key) => key != 0))
 		
 	}
 
