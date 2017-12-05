@@ -96,6 +96,7 @@ export class Scenario
 			this.avatar['_gsTransform'].y
 		)
 		// console.log(event.target._gsTransform)
+		// http://jsfiddle.net/tahirahmed/u90yz86r/
 	}
 
 	private createAvatar() : void

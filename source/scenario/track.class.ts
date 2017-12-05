@@ -17,20 +17,18 @@ export class Track
 		let visited = new Array<Level>()
 		let stage = new Array<Level>()
 		let stack = new Array<Level>()
-		let found = false
 
 		stage.push(this.levels[current])
 
-		while(!found)
+		loop:
+		while(true)
 		{
 			for(let level of stage)
 			{
 				if(level.value == target)
 				{
-					level.visited = true
 					visited.push(level)
-					found = true
-					break
+					break loop
 				}
 				else
 				{
