@@ -12,8 +12,8 @@ export class Scenario
 	private pins:NodeListOf<SVGCircleElement>
 	private avatar:HTMLElement
 	private loader:Element
-	private tl:TimelineMax
-	private tlStack:TimelineMax
+	private timeline:TimelineMax
+	private timelineStack:TimelineMax
 
 	constructor(preLevelList:Array<PreLevel>, lines:NodeListOf<SVGLineElement>, pins:NodeListOf<SVGCircleElement>, avatar:HTMLElement, loader:Element)
 	{
@@ -24,7 +24,7 @@ export class Scenario
 		this.pins = pins
 		this.avatar = avatar
 		this.loader = loader
-		this.tl = new TimelineMax()
+		this.timeline = new TimelineMax()
 		this.load()
 
 		this.onComplete = this.onComplete.bind(this)
@@ -48,13 +48,14 @@ export class Scenario
 		}
 	}
 
+	// TODO: separate these two features
 	private createPinsAndListeners() : void
 	{
 		for(let [key, pin] of this.pins.entries())
 		{
 			const level = this.track.levels[key]
 	
-			this.tl.set(pin, {
+			this.timeline.set(pin, {
 				x: level.pin.x,
 				y: level.pin.y,
 				xPercent: -50,
@@ -64,78 +65,73 @@ export class Scenario
 			// TODO: type this
 			pin.onclick = (event:any) => {
 
-				if(!this.tl.isActive())
+				this.levelTarget(+event.target.getAttribute("data-id"))
+				
+				if(this.timeline.isActive())
 				{
-					this.current = this.target
-					this.target = +event.target.getAttribute("data-id")
-
-					this.tl = new TimelineMax()
-
-					// TODO: maybe remove this
-					if(this.current != this.target)
-					{
-						const points = this.track.search(this.target, this.current)
-						for(let point of points)
-						{
-							this.tl.to(
-								this.avatar, 
-								.5, 
-								{ 
-									bezier: { values: point, type:"soft" }, 
-									ease: Power0.easeNone,
-									onComplete: this.onComplete
-								}
-							)
-						}
-					}
+					this.timelineStack = this.buildTimelineTrack(this.target, this.current)
 				}
 				else
 				{
-					this.tl.pause()
-
-					this.current = this.target
-					this.target = +event.target.getAttribute("data-id")
-
-					this.pathToTimeline(this.tlStack)
+					this.timeline = this.buildTimelineTrack(this.target, this.current)
 				}
-	
+
+				this.timeline.play()
 			}
-	
 		}
+	}
+
+	private levelTarget(level:number) : void
+	{
+		this.current = this.target
+		this.target = level
+	}
+
+	private buildTimelineTrack(target:number, current:number) : TimelineMax
+	{
+		const timeline = new TimelineMax({ paused: true })
+		const points = this.track.search(target, current)
+
+		for(let point of points)
+		{
+			timeline.to(
+				this.avatar, 
+				1, 
+				{ 
+					bezier: { values: point, type:"soft" }, 
+					ease: Power0.easeNone,
+					onComplete: this.onComplete
+				}
+			)
+		}
+
+		return timeline
 	}
 
 	private onComplete() : void
 	{
-		console.log(
-			`x: ${ this.avatar['_gsTransform'].x }`,
-			`y: ${ this.avatar['_gsTransform'].y }`
-		)
-	}
+		console.log(this.timelineStack)
 
-	private pathToTimeline(tl:TimelineMax) : void
-	{
-		tl = new TimelineMax({ paused: true })
+		if(this.timelineStack)
+		{
+			this.timeline.pause()
+			this.timeline.kill()
+			this.timeline = this.timelineStack
+			this.timeline.play()
+			this.timelineStack = undefined
+		}
 		
-		this.track
-			.search(this.target, this.current)
-			.map(point => {
-				tl.to(
-					this.avatar, 
-					.5, 
-					{ 
-						bezier: { values: point, type:"soft" }, 
-						ease: Power0.easeNone,
-						onComplete: this.onComplete
-					}
-				)
-			})
+		// console.log(
+		// 	`x: ${ this.avatar['_gsTransform'].x }`,
+		// 	`y: ${ this.avatar['_gsTransform'].y }`
+		// )
 	}
 
 	private createAvatar() : void
 	{
 		const pin = this.track.levels[0].pin
 		
-		this.tl.set(this.avatar, {
+		this.timeline.set(this.avatar, {
 			x: pin.x,
 			y: pin.y,
 			xPercent: -50,
