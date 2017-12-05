@@ -26,7 +26,7 @@ export class Scenario
 		this.tl = new TimelineMax()
 		this.load()
 
-		this.onUpdate = this.onUpdate.bind(this)
+		this.onComplete = this.onComplete.bind(this)
 	}
 
 	private load() : void 
@@ -68,19 +68,29 @@ export class Scenario
 					this.current = this.target
 					this.target = +event.target.getAttribute("data-id")
 
-					this.tl = new TimelineMax({ onUpdate: this.onUpdate })
+					this.tl = new TimelineMax()
 
 					if(this.current != this.target)
 					{
 						const points = this.track.search(this.target, this.current)
 						for(let point of points)
 						{
-							this.tl.to(this.avatar, .5, { bezier: { values: point, type:"soft" }, ease: Power0.easeNone })
+							this.tl.to(
+								this.avatar, 
+								.5, 
+								{ 
+									bezier: { values: point, type:"soft" }, 
+									ease: Power0.easeNone,
+									onComplete: this.onComplete
+								}
+							)
 						}
 					}
 				}
 				else
 				{
+					// this.current = this.target
+					// this.target = +event.target.getAttribute("data-id")
 					this.tl.pause()
 				}
 	
@@ -89,14 +99,12 @@ export class Scenario
 		}
 	}
 
-	private onUpdate(avatar:HTMLElement)
+	private onComplete() : void
 	{
 		console.log(
-			this.avatar['_gsTransform'].x,
-			this.avatar['_gsTransform'].y
+			`x: ${ this.avatar['_gsTransform'].x }`,
+			`y: ${ this.avatar['_gsTransform'].y }`
 		)
-		// console.log(event.target._gsTransform)
-		// http://jsfiddle.net/tahirahmed/u90yz86r/
 	}
 
 	private createAvatar() : void
