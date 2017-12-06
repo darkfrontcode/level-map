@@ -93,7 +93,7 @@ export class Scenario
 		{
 			timeline.to(
 				this.avatar,
-				1, 
+				.5, 
 				{ 
 					bezier: { values: point, type:"soft" }, 
 					ease: Power0.easeNone,

@@ -55,11 +55,17 @@ export class Track
 		const path = this.trackParent(visited)
 		const points = this.buildTimelinePath(path)
 
-		// TODO: refactory this
-		return new Tracker(points, path.filter((p, key) => key != 0))
+		return new Tracker(points, this.removeFirstLevel(path))
 		
 	}
 
+	// TODO: look for a better way to do that
+	private removeFirstLevel(levels:Array<Level>) : Array<Level>
+	{
+		return levels.filter((p, key) => key != 0)
+	}
+
+	// TODO: refactory this
 	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
 	{
 		const path = new Array<Array<Point>>()
@@ -78,7 +84,6 @@ export class Track
 				current.pin.y > next.pin.y ? path.push(current.path.backward) : path.push(current.path.forward)
 			else
 				current.pin.y > next.pin.y ? path.push(next.path.backward) : path.push(next.path.forward)
-			
 		}
 		else
 		{
@@ -89,7 +94,19 @@ export class Track
 					if(key == last)
 					{
 						prev = levels[key - 1]
-						prev.pin.y > level.pin.y ? path.push(level.path.backward) : path.push(level.path.forward)
+						// prev.pin.y > level.pin.y ? path.push(level.path.backward) : path.push(level.path.forward)
+
+						if(level.pin.y > prev.pin.y) path.push(level.path.forward)
+					}
+					else if(key == 0)
+					{
+						// TODO: something
+						next = levels[key + 1]
+
+						if(level.pin.y > next.pin.y)
+						{
+							path.push(level.path.backward)
+						}
 					}
 					else
 					{
