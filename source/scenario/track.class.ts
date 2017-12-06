@@ -91,22 +91,15 @@ export class Track
 			{
 				if(level.value != 0)
 				{
-					if(key == last)
+					if(key == 0)
+					{
+						next = levels[key + 1]
+						if(level.pin.y > next.pin.y) path.push(level.path.backward)
+					}
+					else if(key == last)
 					{
 						prev = levels[key - 1]
-						// prev.pin.y > level.pin.y ? path.push(level.path.backward) : path.push(level.path.forward)
-
 						if(level.pin.y > prev.pin.y) path.push(level.path.forward)
-					}
-					else if(key == 0)
-					{
-						// TODO: something
-						next = levels[key + 1]
-
-						if(level.pin.y > next.pin.y)
-						{
-							path.push(level.path.backward)
-						}
 					}
 					else
 					{
