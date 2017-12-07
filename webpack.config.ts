@@ -1,14 +1,9 @@
 import * as path 				from 'path'
-import * as webpack 			from 'webpack'
 
 export default <any>{
 	entry: {
 
-		app: [
-			// 'webpack/hot/dev-server',
-			// 'webpack-hot-middleware/client',
-			path.join(__dirname, './source/main.ts')
-		]
+		app: [ path.join(__dirname, './source/main.ts') ]
 		
 	},
 	output: {
@@ -34,18 +29,10 @@ export default <any>{
 		]
 
 	},
-	// externals: {
-	// 	'TweenLite' : 'TweenLite'
-	// },
 	devtool: "source-map",
 	resolve: {
 
 		extensions: ['.ts', '.tsx', '.js']
 
-	},
-	plugins:[
-
-		new webpack.HotModuleReplacementPlugin(),
-
-	],
+	}
 }

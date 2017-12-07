@@ -2,6 +2,7 @@ import { Track } from './track.class'
 import { PreLevel } from './pre-level.class'
 import { PreLevels } from './pre-levels.class'
 import { TimelineMax, Power0 } from 'gsap'
+import { Level } from './level.class'
 
 export class Scenario
 {
@@ -28,15 +29,15 @@ export class Scenario
 		this.stop = false
 		this.load()
 
-		// adjust bindings
 		this.onComplete = this.onComplete.bind(this)
 	}
 
 	private load() : void 
 	{
 		this.createPath()
-		this.createPinsAndListeners()
-		this.createAvatar()
+		this.createPins()
+		this.createListeners()
+		this.teleportAvatar()
 		this.removeLoader()
 	}
 
@@ -50,24 +51,30 @@ export class Scenario
 		}
 	}
 
-	// TODO: separate these two features and make better names
-	private createPinsAndListeners() : void
+	private createPins() : void
 	{
+		let level: Level
+
 		for(let [key, pin] of this.pins.entries())
 		{
-			const level = this.track.levels[key]
-	
+			level = this.track.levels[key]
+			
 			this.timeline.set(pin, {
 				x: level.pin.x,
 				y: level.pin.y,
 				xPercent: -50,
 				yPercent: -50
 			})
-	
-			// TODO: type this
-			pin.onclick = (event:any) => {
+		}
+	}
 
-				this.setTarget(+event.target.getAttribute("data-id"))
+	private createListeners() : void
+	{
+		for(let pin of this.pins)
+		{	
+			pin.onclick = (event:MouseEvent) => {
+
+				this.trackPosition(+(<HTMLInputElement>event.target).getAttribute("data-id"))
 				
 				if(this.timeline.isActive())
 					this.stop = true
@@ -77,8 +84,7 @@ export class Scenario
 		}
 	}
 
-	// TODO: put this on set
-	private setTarget(level:number) : void
+	private trackPosition(level:number) : void
 	{
 		this.current = this.target
 		this.target = level
@@ -120,8 +126,7 @@ export class Scenario
 		}
 	}
 
-	// TODO: think in a better name
-	private createAvatar() : void
+	private teleportAvatar() : void
 	{
 		const pin = this.track.levels[0].pin
 		
