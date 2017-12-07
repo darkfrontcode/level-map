@@ -12,10 +12,7 @@ export class Track
 	}
 
 	public search(target:number, current:number) : Tracker
-	{
-		// TODO: chek this for performance
-		this.unVisitAll()
-		
+	{	
 		let visited = new Array<Level>()
 		let stage = new Array<Level>()
 		let stack = new Array<Level>()
@@ -55,16 +52,17 @@ export class Track
 
 		const path = this.trackParent(visited)
 		const points = this.buildTimelinePath(path)
-
-		// TODO: do better
 		path.shift()
+		const tracker = new Tracker(points, path)
 
-		return new Tracker(points, path)
+		this.resetAll()
+
+		return tracker
 		
 	}
 
 	// TODO: refactory this
-	public buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
+	private buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
 	{
 		const path = new Array<Array<Point>>()
 		const last = levels.length - 1
@@ -123,7 +121,7 @@ export class Track
 		return path
 	}
 
-	public trackParent(visited:Array<Level>) : Array<Level>
+	private trackParent(visited:Array<Level>) : Array<Level>
 	{
 		const track = new Array<Level>()
 		let current = visited[visited.length -1]
@@ -145,7 +143,7 @@ export class Track
 		return track.reverse()
 	}
 
-	private unVisitAll() : void
+	private resetAll() : void
 	{
 		for(let level of this.levels)
 		{
