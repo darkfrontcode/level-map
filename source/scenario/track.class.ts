@@ -61,25 +61,43 @@ export class Track
 		
 	}
 
-	// TODO: refactory this
+	private trackParent(visited:Array<Level>) : Array<Level>
+	{
+		const track = new Array<Level>()
+		let current = visited[visited.length -1]
+
+		while(true)
+		{
+			if(current.parent == null)
+			{
+				track.push(current)
+				break
+			}
+			else
+			{
+				track.push(current)
+				current = current.parent
+			}
+		}
+
+		return track.reverse()
+	}
+
 	private buildTimelinePath(levels:Array<Level>) : Array<Array<Point>>
 	{
 		const path = new Array<Array<Point>>()
+		const single = levels.length == 2
 		const last = levels.length - 1
 
 		let next:Level
 		let prev:Level
 		let current:Level
 
-		if(levels.length == 2)
+		if(single)
 		{
 			current = levels[0]
 			next = levels[1]
-
-			if(current.pin.y > next.pin.y)
-				current.pin.y > next.pin.y ? path.push(current.path.backward) : path.push(current.path.forward)
-			else
-				current.pin.y > next.pin.y ? path.push(next.path.backward) : path.push(next.path.forward)
+			current.pin.y > next.pin.y ? path.push(current.path.backward) : path.push(next.path.forward)
 		}
 		else
 		{
@@ -119,28 +137,6 @@ export class Track
 		}
 
 		return path
-	}
-
-	private trackParent(visited:Array<Level>) : Array<Level>
-	{
-		const track = new Array<Level>()
-		let current = visited[visited.length -1]
-
-		while(true)
-		{
-			if(current.parent == null)
-			{
-				track.push(current)
-				break
-			}
-			else
-			{
-				track.push(current)
-				current = current.parent
-			}
-		}
-
-		return track.reverse()
 	}
 
 	private resetAll() : void
