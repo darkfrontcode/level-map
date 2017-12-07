@@ -13,6 +13,7 @@ export class Track
 
 	public search(target:number, current:number) : Tracker
 	{
+		// TODO: chek this for performance
 		this.unVisitAll()
 		
 		let visited = new Array<Level>()
@@ -55,14 +56,11 @@ export class Track
 		const path = this.trackParent(visited)
 		const points = this.buildTimelinePath(path)
 
-		return new Tracker(points, this.removeFirstLevel(path))
-		
-	}
+		// TODO: do better
+		path.shift()
 
-	// TODO: look for a better way to do that
-	private removeFirstLevel(levels:Array<Level>) : Array<Level>
-	{
-		return levels.filter((p, key) => key != 0)
+		return new Tracker(points, path)
+		
 	}
 
 	// TODO: refactory this
