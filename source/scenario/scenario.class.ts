@@ -15,6 +15,7 @@ export class Scenario
 	private loader:Element
 	private timeline:TimelineMax
 	private stop:boolean
+	private clickable:boolean
 
 	constructor(preLevelList:Array<PreLevel>, lines:NodeListOf<SVGLineElement>, pins:NodeListOf<SVGCircleElement>, avatar:HTMLElement, loader:Element)
 	{
@@ -27,6 +28,7 @@ export class Scenario
 		this.loader = loader
 		this.timeline = new TimelineMax()
 		this.stop = false
+		this.clickable = true
 		this.load()
 
 		this.onComplete = this.onComplete.bind(this)
@@ -74,13 +76,24 @@ export class Scenario
 		{	
 			pin.onclick = (event:MouseEvent) => {
 
-				this.trackPosition(+(<HTMLInputElement>event.target).getAttribute("data-id"))
-				
-				if(this.timeline.isActive())
-					this.stop = true
-				else
-					this.timeline = this.buildTimelineTrack(this.target, this.current)
+				const levelId = Number((<HTMLElement>event.target).getAttribute("level-id"))
+
+				if(this.clickable && levelId != this.target)
+				{
+					this.clickable = false
+
+					this.trackPosition(levelId)
+					
+					if(this.timeline.isActive())
+						this.stop = true
+					else
+						this.timeline = this.buildTimelineTrack(this.target, this.current)
+						
+					this.clickable = true
+				}
 			}
+
+			pin.ondblclick = (event:MouseEvent) => event.preventDefault() 
 		}
 	}
 
@@ -99,7 +112,7 @@ export class Scenario
 		{
 			timeline.to(
 				this.avatar,
-				.5, 
+				1, 
 				{ 
 					bezier: { values: point, type:"soft" }, 
 					ease: Power0.easeNone,
