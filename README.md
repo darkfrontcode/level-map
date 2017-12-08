@@ -4,7 +4,7 @@ Simple Level map logic like snes/playstation tactics ogre/final fantasy tactics
   <img src="https://github.com/darkfrontcode/level-map/blob/master/gif.gif">
 </p>
 
-# check it out!
+### check it out!
 Level Map on Heroku => [https://level-map.herokuapp.com/](https://level-map.herokuapp.com/)
 
 ### How to install
