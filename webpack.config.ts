@@ -1,5 +1,8 @@
 import * as path 				from 'path'
 
+// No types for this plugin for now => @types/open-browser-webpack-plugin
+const OpenBrowserPlugin = require('open-browser-webpack-plugin')
+
 export default <any>{
 	entry: {
 
@@ -34,5 +37,8 @@ export default <any>{
 
 		extensions: ['.ts', '.tsx', '.js']
 
-	}
+	},
+	plugins: [
+		new OpenBrowserPlugin({ url: 'http://localhost:3000' })
+	]
 }
